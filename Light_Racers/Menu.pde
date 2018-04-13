@@ -478,7 +478,7 @@ class Menu {
         return 5;
       
       // Map 6 is selected
-      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2)
+      else if(mouseX > 3*width/4-200/2 && mouseX < 3*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2)
         return 6;
         
       // Start button is pressed

@@ -15,7 +15,7 @@ void setup(){
  menu = new Menu();
  map = new Maps();
  game = new Game();
- user = new Racer(color(0, 0, 255), 10, 10, 15, 5, 0, 5);
+ user = new Racer(color(0, 0, 255), 10, 10, 15, 3, 0, 3);
 }
 
 void draw(){
@@ -110,7 +110,6 @@ void mousePressed() {
          // Display level 1
          case 1: { 
            map.display_level1();
-           println("goodbye");
            break; 
          }
          // Display level 2 and set obsticals inside light trails array

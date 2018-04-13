@@ -217,66 +217,140 @@ class Maps{
   }
   
   
+  // Method for alerting the light trails array of the obsticals contained within level 5. It inputs the light trail array and the width of the car (taken into account when calculating obstical parameters).
   void set_level3_obsticals(boolean[][] light_trails, int car_width){
-
+    // Left side obstical 
+    for(int x = 0-car_width; x < w/4+car_width; ++x)
+      for(int y = h/2-25-car_width; y < h/2+25+car_width; ++y) 
+        // Check that calculated position is within the bounds of the array
+        if(x > 0 && y > 0 && x < w && y < h)  
+          light_trails[(int)x][(int)y] = true;  
+      
+    // Right side obstical
+    for(int x = w+car_width; x > w-w/4-car_width; --x)
+      for(int y = h/2-25-car_width; y < h/2+25+car_width; ++y)
+        // Check that calculated position is within the bounds of the array
+        if(x > 0 && y > 0 && x < w && y < h)  
+          light_trails[(int)x][(int)y] = true;  
+          
+    // Bottom obstical
+    for(int x = w/2-25-car_width; x < w/2+25+car_width; ++x)
+      for(int y = h+car_width; y > h-w/4-car_width; --y)
+         // Check that calculated position is within the bounds of the array
+        if(x > 0 && y > 0 && x < w && y < h)  
+          light_trails[(int)x][(int)y] = true;  
+  
+    // Top obstical 
+    for(int x = w/2-25-car_width; x < w/2+25+car_width; ++x)
+      for(int y = 0-car_width; y < w/4+car_width; ++y)
+         // Check that calculated position is within the bounds of the array
+        if(x > 0 && y > 0 && x < w && y < h)  
+          light_trails[(int)x][(int)y] = true;         
   }
   
-  void set_level4_obsticals(boolean[][] light_trails, int car_width){
-
+  
+  // Method for alerting the light trails array of the obsticals contained within level 5. It inputs the light trail array and the width of the car (taken into account when calculating obstical parameters). 
+  void set_level4_obsticals(boolean[][] light_trails, int car_width){    
+    // Iterate through the circle obstical and alert light_trails array of its presence 
+    // First loop to iterate through every layer of the radius (0-100)
+    for(int radius = 0; radius < 100+car_width; ++radius) {
+      // Second loop to iterate around the circle
+      for(float angle = 0; angle < 360; ++angle) {
+        // Obtain the x-y coordinates around the radius of the circle
+        float x = radius*sin((radians(angle)))+w/2;   
+        float y = radius*cos((radians(angle)))+h/2;
+        
+        // Check that calculated position is within the bounds of the array
+        if(x > 0 && y > 0 && x < w && y < h)  
+          light_trails[(int)x][(int)y] = true;  
+      }
+    }
   }
   
+  // Method for alerting the light trails array of the obsticals contained within level 5. It inputs the light trail array and the width of the car (taken into account when calculating obstical parameters). 
   void set_level5_obsticals(boolean[][] light_trails, int car_width){
-    // Upper left corner
+    // Upper left corner obstical 
     for(int x = 100-car_width; x < 150+car_width; ++x)
       for(int y = 100-car_width; y < 225+car_width; ++y)
-         if(x > 0 && x < w && y > 0 && y < h)
+         if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
           light_trails[x][y] = true;
  
     for(int x = 100-car_width; x < 300+car_width; ++x)
       for(int y = 100-car_width; y < 150+car_width; ++y)
-         if(x > 0 && x < w && y > 0 && y < h)
+         if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
           light_trails[x][y] = true;
          
           
-    // Lower left corner
+    // Lower left corner obstical 
     for(int x = 100-car_width; x < 150+car_width; ++x)
       for(int y = h-100+car_width; y > h-225-car_width; --y)
-         if(x > 0 && x < w && y > 0 && y < h)
+         if(x > 0 && x < w && y > 0 && y < h)  // Ensure that position being iterated through is within the bounds of the array
           light_trails[x][y] = true;
   
     for(int x = 100-car_width; x < 300+car_width; ++x)
         for(int y = h-150-car_width; y < h-100+car_width; ++y)
-           if(x > 0 && x < w && y > 0 && y < h)
+           if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
             light_trails[x][y] = true;
             
             
-    // Upper right corner 
+    // Upper right corner obstical
     for(int x = w-100+car_width; x > w-150-car_width; --x)
       for(int y = 100-car_width; y < 225+car_width; ++y)
-         if(x > 0 && x < w && y > 0 && y < h)
+         if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
           light_trails[x][y] = true;
 
     for(int x = w-100+car_width; x > w-300-car_width; --x)
       for(int  y= 100-car_width; y < 150+car_width; ++y)
-         if(x > 0 && x < w && y > 0 && y < h)
+         if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
           light_trails[x][y] = true;
       
       
-    // Lower right corner
+    // Lower right corner obstical 
     for(int x = w-100+car_width; x > w-150-car_width; --x)
       for(int y = h-100+car_width; y > h-225-car_width; --y)
-         if(x > 0 && x < w && y > 0 && y < h)
+         if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
           light_trails[x][y] = true;
   
     for(int x = w-100+car_width; x > w-300-car_width; --x)
       for(int y = h-150-car_width; y < h-100+car_width; ++y)
-         if(x > 0 && x < w && y > 0 && y < h)
+         if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
             light_trails[x][y] = true;
            
    }
   
   void set_level6_obsticals(boolean[][] light_trails, int car_width){
+    // Far left column obstical
+    for(int x = w/4-25-car_width; x < w/4+25+car_width; ++x)
+      for(int y = 0-car_width; y < 300+car_width; ++y)         
+        if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
+            light_trails[x][y] = true;
+                    
+    for(int x = w/4-25-car_width; x < w/4+25+car_width; ++x)
+      for(int y = h+car_width; y > h-100-car_width; --y)
+         if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
+            light_trails[x][y] = true;
 
+    // Middle column obstical 
+    for(int x = 2*w/4-25-car_width; x < 2*w/4+25+car_width; ++x)
+      for(int y = 0-car_width; y < 150+car_width; ++y)
+          if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
+            light_trails[x][y] = true;
+    
+    for(int x = 2*w/4-25-car_width; x < 2*w/4+25+car_width; ++x) 
+      for(int y = h+car_width; y > h-250-car_width; --y) 
+        if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
+            light_trails[x][y] = true;
+            
+   // Far right column obstical
+    for(int x = 3*w/4-25-car_width; x < 3*w/4+25+car_width; ++x) 
+      for(int y = 0-car_width; y < 200+car_width; ++y) 
+        if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
+            light_trails[x][y] = true;
+            
+    for(int x = 3*w/4-25-car_width; x < 3*w/4+25+car_width; ++x) 
+      for(int y = h+car_width; y > h-200-car_width; --y) 
+        if(x > 0 && x < w && y > 0 && y < h)   // Ensure that position being iterated through is within the bounds of the array
+            light_trails[x][y] = true;
   }  
   
    // Boolean method to return whether the exit button the menu bar was clicked or not
