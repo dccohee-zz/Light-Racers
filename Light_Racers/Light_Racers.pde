@@ -8,13 +8,14 @@ import ddf.minim.ugens.*;
 Menu menu;
 Maps map;
 Game game;
+Racer user, comp1, comp2, comp3;
 
 void setup(){
  size(800, 600); 
  menu = new Menu();
  map = new Maps();
  game = new Game();
- 
+ user = new Racer(color(0, 0, 255), 10, 10, 15, 5, 0, 5);
 }
 
 void draw(){
@@ -36,15 +37,38 @@ void draw(){
   else if(menu.get_selection().equals("maps"))
     menu.display_maps();
     
-  else if(menu.get_selection().equals("game")){
+  else if(menu.get_selection().equals("game")){ 
     if(game.get_play()){
-      map.draw_map(game.get_level());
+      // Draw car:
+      user.display();  
+      
+      // Update position:
+      user.update();   
+      
+      // Check if destroyed:
+      boolean wall_result = map.check_wall(user.get_x(), user.get_y(), user.get_width()/2);   // Check if car is within bounds of walls
+      boolean trail_result = game.get_light_trail(user.get_x(), user.get_y());   // Check if car has run into pre-existing light trail
+      
+      game.set_light_trail(user.get_x(), user.get_y());   // Update light trail array with position of car
+      
+      // If car has hit wall or light-trail, reset the game 
+      if(wall_result || trail_result) {
+        user.reset_car();
+        game.reset();
+        map.stop_song();   // End current song
+        menu.set_selection("menu");   // Return to menu screen
+        menu.set_first_load(true);
+      }
     }
   }
     
   else if(menu.get_selection().equals("exit"))
     this.exit();
    
+}
+
+void keyPressed(){
+  user.press_key(); 
 }
 
 
@@ -75,16 +99,61 @@ void mousePressed() {
   else if(menu.get_selection().equals("maps")) {
     int level = menu.mousepressed_maps();   // Method returns the map selected
     
-    // Set level if valid map is selected
-    if(level > 0 && level <= 6)
-      game.set_level(level);
-    // If zero is returned, begin the game
-    else if(level == 0) {
-      menu.curr_song_stop();
-      menu.set_selection("game");  
-      game.set_play(true);
-      game.get_song();
-      map.draw_map(level);   // Draw map based on which one was selected
+    // Set level to map user selected (map 1 through map 6)
+    if(level >= 1 && level <= 6)
+      map.set_level(level);
+      
+    // If 0 is returned, user pressed play button
+    else if(level == 0) {   
+      // Switch statement to display map based on selection
+       switch(map.get_level()){       
+         // Display level 1
+         case 1: { 
+           map.display_level1();
+           println("goodbye");
+           break; 
+         }
+         // Display level 2 and set obsticals inside light trails array
+         case 2: { 
+           map.display_level2();
+           map.set_level2_obsticals(game.get_light_trail(), user.get_width()); 
+           break;
+         }
+         // Display level 3 and set obsticals inside light trails array
+         case 3: { 
+           map.display_level3(); 
+           map.set_level3_obsticals(game.get_light_trail(), user.get_width());
+           break; 
+         }
+         // Display level 4 and set obsticals inside light trails array
+         case 4: { 
+           map.display_level4(); 
+           map.set_level4_obsticals(game.get_light_trail(), user.get_width());
+           break; 
+         }
+         // Display level 5 and set obsticals inside light trails array
+         case 5: { 
+           map.display_level5(); 
+           map.set_level5_obsticals(game.get_light_trail(), user.get_width());
+           break; 
+         }
+         // Display level 6 and set obsticals inside light trails array
+         case 6: { 
+           map.display_level6(); 
+           map.set_level6_obsticals(game.get_light_trail(), user.get_width());
+           break; 
+         }
+         // Default case: display level 1
+         default: { 
+           map.display_level1();
+           break; 
+         }  
+       }
+         
+       // Initalize game after loading level
+       menu.curr_song_stop();   
+       menu.set_selection("game");  
+       game.set_play(true);
     }
   }
   
@@ -95,7 +164,7 @@ void mousePressed() {
     // If returned true, player has exited out of the game
     if(exit) {
       game.set_play(false);   // End current game sequence
-      game.stop_song();   // End current song
+      map.stop_song();   // End current song
       menu.set_selection("menu");   // Return to menu screen
       menu.set_first_load(true);
     }

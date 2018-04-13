@@ -2,6 +2,8 @@ class Racer{
   // DATA MEMBERS:
   private color c;   // Color of car
   private int x, y;   // Position of car on grid
+  private int start_x, start_y;   // Initial spawn position of car 
+  private int car_width;    // Width of car
   private float vx, vy;   // Speed of car
   private float speed; 
   private boolean destroyed;   // Boolean variable for if car is still alive
@@ -11,6 +13,7 @@ class Racer{
   Racer(){
    x = 30;
    y = 25;
+   car_width = 15;
    c = color(#002BFA);
    speed = 3;
    vx = 0;
@@ -19,10 +22,13 @@ class Racer{
   }
   
   // Overloaded Constructor
-  Racer(color c, int x, int y, float speed, float vx, float vy){
+  Racer(color c, int start_x, int start_y, int car_width, float speed, float vx, float vy){
     this.c = c;
-    this.x = x;
-    this.y = y;
+    this.start_x = start_x;
+    this.start_y = start_y;
+    x = start_x;
+    y = start_y;
+    this.car_width = car_width;
     this.speed = speed;
     this.vx = vx;
     this.vy = vy;
@@ -39,12 +45,15 @@ class Racer{
   // Accessor for destroyed
   boolean get_destroyed(){  return this.destroyed; }  
   
+  // Accessors for car width
+  int get_width() { return this.car_width; }
+  
   // Draw car
   void display(){
-    rectMode(CORNER);
+    rectMode(CENTER);
     fill(c);
     noStroke();
-    rect(x, y, 15, 15);
+    rect(x, y, car_width, car_width);
   }
    
   // Update car's position based on speed
@@ -53,14 +62,7 @@ class Racer{
     y += vy;
   }
   
-  // Method for checking if car is still within wall boundaries
-  void check_wall(int w1, int h1, int w2, int h2){
-     if(x < w1 || x > w2-15)
-       destroyed = true;
-     if(y < h1 || y > h2-15)
-       destroyed = true;
-  }
-  
+    
   void check_collision(boolean[][] light_trail){
     if(x > 0 && y > 0){
       if(light_trail[x][y])
@@ -120,13 +122,13 @@ class Racer{
       }
     }
   }
-    
-  // Method to reset class fields
-  void reset_car(){
-    destroyed = false;
-    vy = speed;
-    vx = 0;
-    x = 30; 
-    y = 25;
-  }
+      
+    // Method to reset class fields
+    void reset_car(){
+      destroyed = false;
+      vy = speed;
+      vx = 0;
+      x = start_x; 
+      y = start_y;
+    }
 }

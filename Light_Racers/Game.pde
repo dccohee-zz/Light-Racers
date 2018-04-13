@@ -1,42 +1,24 @@
 class Game {
   // DATA FIELDS
-  private Minim minim;
-  private AudioPlayer curr_song, song1, song2, song3;
-  
   private boolean[][] light_trail;
   private int score;
   private int num_players;
   private boolean difficulty;
-  private boolean[] items;
   private int level;
   private boolean play;
     
   // CONSTRUCTORS
-  Game(){
-   // Load all songs to be used in game
-   minim = new Minim(Light_Racers.this);
-   song1 = minim.loadFile("Derezzed.mp3");
-   song2 = minim.loadFile("Tron Legacy (End Titles).mp3");
-   song3 = minim.loadFile("The Game Has Changed.mp3");
-   curr_song = song1;
-   
+  Game(){   
    // Dynamically allocate 2D array the size of the playing arena
    // Set all values to false (indicating that none of the spaces have been occupied)
    light_trail = new boolean[width][height-100];
-   for(int i = 0; i < light_trail.length; ++i)
-     for(int j = 0; j < light_trail[i].length; ++j)
-       light_trail[i][j] = false;
+   for(int x = 0; x < light_trail.length; ++x)  
+     for(int y = 0; y < light_trail[x].length; ++y)
+       light_trail[x][y] = false;
   
    score = 0;
    num_players = 2;
    difficulty = false;   // true = hard difficutly; false = easy difficulty
-  
-   // Dynmically create array to indicate the items being used each game
-   items = new boolean[5];
-   // Set all items to be used in play
-   for(int i = 0; i < items.length; ++i)
-     items[i] = true;
-   
    level = 1;   
    play = false;   // Variable for controlling when the game is in play and when it is finished
   }
@@ -74,26 +56,18 @@ class Game {
     boolean get_play() { return this.play; }
     void set_play(boolean play) { this.play = play; } 
     
-    // Getter/setter for song
-    void get_song() { curr_song.play(); }    // (Getter only plays song instead of returning the song)
-    
-    void set_song(int choice) 
-    { 
-      // Validate that song choice passed in is within expected parameters
-      if(choice < 1 || choice > 3)
-        return;
-       
-       // Switch statement to change song based on choice
-       switch(choice) {
-        case 1: curr_song = song1;
-        case 2: curr_song = song2;
-        case 3: curr_song = song3;
-       }
+    // Getter/setter for light trail
+    boolean get_light_trail(int x, int y) { return this.light_trail[x][y]; }
+    boolean[][] get_light_trail() { return this.light_trail; }
+    void set_light_trail(int x, int y) {
+      light_trail[x][y] = true;
     }
     
-    void stop_song() {
-      curr_song.pause();
-      curr_song.rewind();
+    void reset(){
+     for(int x = 0; x < light_trail.length; ++x)  
+       for(int y = 0; y < light_trail[x].length; ++y)
+         light_trail[x][y] = false;
+         
+      play = false;
     }
-
-}
+ }

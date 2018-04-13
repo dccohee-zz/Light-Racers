@@ -397,8 +397,7 @@ class Menu {
      // Play Game button is pressed
       if(mouseX < width/2+245/2 && mouseX > width/2-245/2 && mouseY > 300-70/2 && mouseY < 300+70/2)
         selection = "maps";
-      
-      
+          
       // Instructions button is pressed
       else if(mouseX < width/4+200/2 && mouseX > width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2)
         selection = "instructions";
