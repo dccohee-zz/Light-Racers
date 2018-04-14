@@ -7,8 +7,18 @@ class Menu {
    private String selection;   // Variable to keep track of menu screen being displayed
    private boolean first_load;   // Boolean variable to notify when new screen is being loaded for first time
    private PImage background;   // Background image for each screen
+   private int map;    // Variable to track which map is selected
    private PFont font;   // Text on UI screens
- 
+   private PImage map1, map2, map3, map4, map5, map6;   // Variables to store images of all map options
+   
+   // Variables to store which button the mouse is hovering over
+   private int hover_menu;
+   private int hover_map;
+   
+   private int song_selection;   // Variable to track which song is selected from the settings screen
+   private int num_players;   // Variable to track the number of players selected from the settings screen
+   private boolean difficulty;   // Variable to track the difficulty selected from the settings screen
+    
    
    // CONSTRUCTORS:
    // Default constructor
@@ -16,12 +26,30 @@ class Menu {
      selection = "menu";
      font = loadFont("OCRAExtended-48.vlw");
      first_load = true;
+     map = 1;
      
+     // Load all songs to prevent lagging due to persistent reloading
      minim = new Minim(Light_Racers.this);
      song1 = minim.loadFile("The Son of Flynn.mp3");
      song2 = minim.loadFile("Solar Sailer.mp3");
      song3 = minim.loadFile("End of Line.mp3");
      
+     // Load all images to prevent lagging due to persistent reloading
+     map1 = loadImage("Level1.jpg");
+     map2 = loadImage("Level2.jpg");
+     map3 = loadImage("Level3.jpg");
+     map4 = loadImage("Level4.jpg");
+     map5 = loadImage("Level5.jpg");
+     map6 = loadImage("Level6.jpg");
+     
+     song_selection = 1;
+     num_players = 2;
+     difficulty = false;
+     
+     hover_map = 1;
+     hover_menu = 1;
+     
+         
      curr_song = song1;
      curr_song.loop();
    }
@@ -35,6 +63,18 @@ class Menu {
    // Getter/setter for first load
    boolean get_first_load() { return this.first_load; }
    void set_first_load(boolean first_load) { this.first_load = first_load; }
+   
+   // Getter/setter for song selection
+   int get_song_selection() { return this.song_selection; }
+   void set_song_selection(int song_selection) { this.song_selection = song_selection; }
+   
+   // Getter/setter for number of players
+   int get_num_players() { return this.num_players; }
+   void set_num_players(int num_players) { this.num_players = num_players; }
+   
+   // Getter/setter for difficulty
+   boolean get_difficulty() { return this.difficulty; }
+   void set_difficulty (boolean difficulty) { this.difficulty = difficulty; }
    
    // Method for drawing main menu
    void display_main_menu(){
@@ -64,15 +104,27 @@ class Menu {
      text("LIGHT RACERS", width/2, 125); 
      
      // Play Game button
+     // Color outline based on mouse hover position
+     if(hover_menu == 1)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);
+     
      rectMode(CENTER);
-     strokeWeight(1);
-     fill(255);
+     strokeWeight(3);
+     fill(255);     
      rect(width/2, 300, 245, 70);
      fill(0);
      textSize(35);
      text("Play Game", width/2, 300);
      
      // Instructions button
+     // Color outline based on mouse hover position
+     if(hover_menu == 2)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);     
+     
      fill(255);
      rect(width/4, 400, 200, 50);
      textSize(25);
@@ -80,24 +132,48 @@ class Menu {
      text("Instructions", width/4, 400);
      
      // Settings button
+     // Color outline based on mouse hover position
+     if(hover_menu == 3)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);     
+
      fill(255);
      rect(width/4, 475, 200, 50);
      fill(0);
      text("Settings", width/4, 475);
      
      // Customize button
+     // Color outline based on mouse hover position
+     if(hover_menu == 4)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);     
+
      fill(255);
      rect(3*width/4, 400, 200, 50);
      fill(0);
      text("Customize", 3*width/4, 400);
      
      // Scores button
+     // Color outline based on mouse hover position
+     if(hover_menu == 5)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);     
+
      fill(255);
      rect(3*width/4, 475, 200, 50);
      fill(0);
      text("Scores", 3*width/4, 475);
      
      // Exit button
+     // Color outline based on mouse hover position
+     if(hover_menu == 6)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);     
+
      fill(255);
      rect(width/2, 550, 200, 50);
      fill(0);
@@ -189,9 +265,14 @@ class Menu {
      ellipse(width/4+300, 200, 15, 15);
      ellipse(width/4+450, 200, 15, 15);
      
+     // Fill bubble of selected option for the number of players
+     fill(0);
+     ellipse(width/4+150*(num_players-1), 200, 5, 5);
+     
      
      // Draw possible items to use:    
      textAlign(RIGHT);
+     fill(255);
      text("Items: ", width/4+25, 300);
      textAlign(CENTER);
      text("Item1", width/4+100, 300);
@@ -208,27 +289,38 @@ class Menu {
      rect(width/4+400, 325, 15, 15);
      rect(width/4+500, 325, 15, 15);
      
-      
      // Show possible curr_songs to play with: 
      textAlign(RIGHT);
-     text("curr_song: ", width/4+25, 425);
+     text("Music: ", width/4+25, 425);
      textAlign(CENTER);
-     text("curr_song1", width/4 + 150, 425);
-     text("curr_song2", width/4 + 300, 425);
-     text("curr_song3", width/4 + 450, 425);
+     text("Song 1", width/4 + 150, 425);
+     text("Song 2", width/4 + 300, 425);
+     text("Song 3", width/4 + 450, 425);
     
      // Bubbles to select option:
      ellipse(width/4+150, 450, 15, 15);
      ellipse(width/4+300, 450, 15, 15);
      ellipse(width/4+450, 450, 15, 15);
      
+     // Fill bubble for the selected song
+     fill(0);
+     ellipse(width/4+song_selection*150, 450, 5, 5);  
+     
      
      // Show possible difficulties:
-     textAlign(RIGHT);
-     text("Difficulty: ", width/4+25, 550);
-     textAlign(CENTER);
-     text("Easy", width/4+200, 550);
-     text("Hard", width/4+400, 550);
+     // Draw box highlighing selected difficulty
+     fill(70, 173, 212);
+     if(difficulty) 
+       rect(width/4+400, 525, 100, 50);   // Draw box around 'Hard' difficulty if selected
+     else
+       rect(width/4+200, 525, 100, 50);   // Else, draw box around 'Easy' difficulty if selected
+     
+     textAlign(RIGHT, CENTER);
+     fill(255);
+     text("Difficulty: ", width/4+25, 525);
+     textAlign(CENTER, CENTER);
+     text("Easy", width/4+200, 525);
+     text("Hard", width/4+400, 525);
    }
    
    
@@ -251,7 +343,6 @@ class Menu {
        curr_song.loop();   // Loop background music
        first_load = false;   // Prevent song from being loaded again
      }
-     
      
      // Screen header
      textFont(font, 50);
@@ -316,7 +407,7 @@ class Menu {
  
  
    // Method for displaying maps for the user to select from
-   void display_maps(){
+   void display_maps(){     
       // Load image for settings page
      background = loadImage("Maps.jpg");
      tint(225, 150);
@@ -329,56 +420,115 @@ class Menu {
      text("MAPS", width/2, 75);
      
      // Back button
+     // Change outline based on mouse hover
+     if(hover_map < 0)
+       stroke(70, 173, 212);
+     else
+       stroke(0);       
+     
      ellipseMode(CENTER);
      ellipse(75, 75, 75, 75);   
      
      strokeWeight(8);
      fill(0);
+     stroke(0);
      line(95, 75, 55, 75);
      line(55, 75, 75, 55);
      line(55, 75, 75, 95);
      
      // Draw maps to select from
      rectMode(CENTER);
-     stroke(3);
      noFill();
      tint(255);
         
      // Draw map icons
-     // Level 1175/2
-     PImage map1 = loadImage("Level1.jpg");
+     // Level 1
+     // If map has been selected, change outline
+     if(map == 1)
+       stroke(70, 173, 212);
+     // Else, if map is being hovered over, change outline
+     else if(hover_map == 1)
+       stroke(255);
+     else
+       stroke(0);
+     
      image(map1, width/4-50-200/2, 225-125/2, 200, 125);
      rect(width/4-50, 225, 200, 125);
      
      // Level 2
-     PImage map2 = loadImage("Level2.jpg");
+     // If map has been selected, change outline
+     if(map == 2)
+       stroke(70, 173, 212);
+     // Else, if map is being hovered over, change outline
+     else if(hover_map == 2)
+       stroke(255);
+     else
+       stroke(0);
+     
      image(map2, 2*width/4-200/2, 225-125/2, 200, 125);
      rect(2*width/4, 225, 200, 125);
      
      // Level 3
-     PImage map3 = loadImage("Level3.jpg");
+     // If map has been selected, change outline
+     if(map == 3)
+       stroke(70, 173, 212);
+     // Else, if map is being hovered over, change outline
+     else if(hover_map == 3)
+       stroke(255);
+     else
+       stroke(0);
+     
      image(map3, 3*width/4+50-200/2, 225-125/2, 200, 125);
      rect(3*width/4+50, 225, 200, 125);
      
      // Level 4
-     rect(width/4-50, 425, 200, 125);     
-     PImage map4 = loadImage("Level4.jpg");
+     // If map has been selected, change outline
+     if(map == 4)
+       stroke(70, 173, 212);
+     // Else, if map is being hovered over, change outline
+     else if(hover_map == 4)
+       stroke(255);
+     else
+       stroke(0);
+        
      image(map4, width/4-50-200/2, 425-125/2, 200, 125);
+     rect(width/4-50, 425, 200, 125);  
      
      // Level 5
-     PImage map5 = loadImage("Level5.jpg");
+     // If map has been selected, change outline
+     if(map == 5)
+       stroke(70, 173, 212);
+     // Else, if map is being hovered over, change outline
+     else if(hover_map == 5)
+       stroke(255);
+     else
+       stroke(0);
+     
      image(map5, 2*width/4-200/2, 425-125/2, 200, 125);   
      rect(2*width/4, 425, 200, 125);
      
      // Level 6
-     PImage map6 = loadImage("Level6.jpg");
+     // If map has been selected, change outline
+     if(map == 6)
+       stroke(70, 173, 212);
+     // Else, if map is being hovered over, change outline
+     else if(hover_map == 6)
+       stroke(255);
+     else
+       stroke(0);
+     
      image(map6, 3*width/4+50-200/2, 425-125/2, 200, 125);
      rect(3*width/4+50, 425, 200, 125);  
      
-     stroke(1);
      noTint();
      
      // Draw start button
+     // Change outline based on mouse hover
+     if(hover_map == 0)
+       stroke(255);
+     else
+       stroke(0);
+     
      fill(175);
      rect(width/2, height-40, 175, 50);
      textFont(font, 30);
@@ -422,6 +572,33 @@ class Menu {
       else if(mouseX < width/2+200/2 && mouseX > width/2-200/2 && mouseY > 550-50/2 && mouseY < 550+50/2)
         selection = "exit";
    }
+   
+   
+   // Method for detecting which button the mouse is hovering over on the menu screen. It contains no input nor output.
+   void mouse_hover_menu(){
+       if(mouseX < width/2+245/2 && mouseX > width/2-245/2 && mouseY > 300-70/2 && mouseY < 300+70/2)
+         hover_menu = 1;
+          
+      // Instructions button is pressed
+      else if(mouseX < width/4+200/2 && mouseX > width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2)
+        hover_menu = 2;
+        
+      // Settings button is pressed    
+      else if(mouseX < width/4+200/2 && mouseX > width/4-200/2 && mouseY > 475-50/2 && mouseY < 475+50/2) 
+        hover_menu = 3;
+        
+      // Customize button is pressed
+      else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2)
+        hover_menu = 4;
+  
+      // Scores button is pressed    
+      else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 475-50/2 && mouseY < 475+50/2)
+        hover_menu = 5;
+        
+      // Exit button is pressed    
+      else if(mouseX < width/2+200/2 && mouseX > width/2-200/2 && mouseY > 550-50/2 && mouseY < 550+50/2)
+        hover_menu = 6;
+   }
  
  
    // Method for controlling what happens when a mouse is clicked on the instructions page
@@ -439,7 +616,38 @@ class Menu {
         selection = "menu";
         first_load = true;
       }
+      
+      // Mouse pressed to change number of players
+      if(dist(mouseX, mouseY, width/4+150, 200) < 15/2){
+        num_players = 2;
+      }
+      else if(dist(mouseX, mouseY, width/4+300, 200) < 15/2){
+        num_players = 3;
+      }
+      else if(dist(mouseX, mouseY, width/4+450, 200) < 15/2){
+        num_players = 4;
+      }
+           
+      // Mouse pressed to change song playing 
+      if(dist(mouseX, mouseY, width/4+150, 450) < 15/2){
+        song_selection = 1;
+      }
+      else if(dist(mouseX, mouseY, width/4+300, 450) < 15/2){
+        song_selection = 2;
+      }
+      else if(dist(mouseX, mouseY, width/4+450, 450) < 15/2){
+        song_selection = 3;
+      }
+      
+     // Mouse pressed to change difficulty
+     // Mouse pressed on hard difficulty 
+     if(mouseX > width/4+350 && mouseX < width/4+450 && mouseY > 475 && mouseY < 575)
+       difficulty = true;
+     // Mouse pressed on easy difficulty
+     else if(mouseX > width/4+150 && mouseX < width/4+250 && mouseY > 475 && mouseY < 575)
+       difficulty = false;
    }
+   
    
    // Method for controlling what happens when a mouse is clicked on the scores page
    void mousepressed_scores(){
@@ -458,28 +666,40 @@ class Menu {
       }
       
       // Map 1 is selected
-      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
+      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2){
+        map = 1;
         return 1;
+      }
       
       // Map 2 is selected
-      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
+      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2){
+        map = 2;
         return 2;
+      }
       
       // Map 3 is selected
-      else if(mouseX > 3*width/4+50-200/2 && mouseX < 3*width/4+50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
+      else if(mouseX > 3*width/4+50-200/2 && mouseX < 3*width/4+50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2) {
+        map = 3;
         return 3;
+      }
       
       // Map 4 is selected
-      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2)
+      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2) {
+        map = 4;
         return 4;
+      }
       
       // Map 5 is selected
-      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2)     
+      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2) {
+        map = 5;
         return 5;
+      }
       
       // Map 6 is selected
-      else if(mouseX > 3*width/4-200/2 && mouseX < 3*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2)
+      else if(mouseX > 3*width/4-200/2 && mouseX < 3*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2){
+        map = 6;
         return 6;
+      }
         
       // Start button is pressed
       else if(mouseX > width/2-175/2 && mouseX < width/2+175/2 && mouseY > height-40-50/2 && mouseY < height-40+50/2)
@@ -487,8 +707,42 @@ class Menu {
       
       else 
         return -1;
-      
    }   
+   
+   // Method for changing the outline of an item when the mouse hovers over it in the maps screen
+   void mouse_hover_maps(){ 
+      // Hover over back button
+      if(dist(mouseX, mouseY, 75, 75) < 75/2)
+        hover_map = -1;
+      
+      // Hover over map 1
+      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
+        hover_map = 1;
+      
+      // Hover over map 2
+      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
+        hover_map = 2;
+      
+      // Hover over map 3
+      else if(mouseX > 3*width/4+50-200/2 && mouseX < 3*width/4+50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
+        hover_map = 3;
+      
+      // Hover over map 4
+      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 425-125/2 && mouseY < 425+125/2)
+        hover_map = 4;
+      
+      // Hover over map 5
+      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 425-125/2 && mouseY < 425+125/2)     
+        hover_map = 5;
+             
+      // Hover over map 6
+      else if(mouseX > 3*width/4-200/2 && mouseX < 3*width/4+200/2 && mouseY > 425-125/2 && mouseY < 425+125/2)
+        hover_map = 6;
+        
+      // Hover over start button 
+      else if(mouseX > width/2-175/2 && mouseX < width/2+175/2 && mouseY > height-40-50/2 && mouseY < height-40+50/2)
+        hover_map = 0;
+   }
    
    // Method for controlling what happens when a mouse is clicked on the maps page
    void mousepressed_customize(){

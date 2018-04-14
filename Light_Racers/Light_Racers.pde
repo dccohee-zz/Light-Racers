@@ -19,8 +19,10 @@ void setup(){
 }
 
 void draw(){
-  if(menu.get_selection().equals("menu"))
+  if(menu.get_selection().equals("menu")){
     menu.display_main_menu();
+    menu.mouse_hover_menu();
+  }
   
   else if(menu.get_selection().equals("instructions"))
     menu.display_instructions();
@@ -34,8 +36,10 @@ void draw(){
   else if(menu.get_selection().equals("scores"))
     menu.display_scores();
     
-  else if(menu.get_selection().equals("maps"))
+  else if(menu.get_selection().equals("maps")){
     menu.display_maps();
+    menu.mouse_hover_maps();
+  }
     
   else if(menu.get_selection().equals("game")){ 
     if(game.get_play()){
@@ -82,8 +86,14 @@ void mousePressed() {
     menu.mousepressed_instructions();
 
   // If on settings screen...
-  else if(menu.get_selection().equals("settings"))
+  else if(menu.get_selection().equals("settings")){
     menu.mousepressed_settings();
+    
+    // Change game settings based on what was pressed in settings screen
+    map.set_song(menu.get_song_selection());   // Update song selection
+    game.set_num_players(menu.get_num_players());   // Update number of players
+    game.set_difficulty(menu.get_difficulty());   // Update difficulty head
+  }
     
   // If on customize screen...
   else if(menu.get_selection().equals("customize"))

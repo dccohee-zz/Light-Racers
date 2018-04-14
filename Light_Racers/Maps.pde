@@ -26,8 +26,37 @@ class Maps{
    
     
   // METHODS:
+  // Accessors and Mutators for data fields:
+  // Getter/Setter for game level
   void set_level(int level) { this.level = level; }
   int get_level() { return this.level; }
+    
+  // Getter/setter for song
+  void get_song() { curr_song.play(); }    // (Getter only plays song instead of returning the song)
+    
+  void set_song(int choice) 
+  { 
+    // Validate that song choice passed in is within expected parameters
+    if(choice < 1 || choice > 3)
+      return;
+       
+     // Switch statement to change song based on choice
+     switch(choice) {
+      case 1: { curr_song = song1; break; }
+      case 2: { curr_song = song2; break; }
+      case 3: { curr_song = song3; break; }
+     }
+  }
+    
+  void stop_song() {
+    curr_song.pause();
+    curr_song.rewind();
+  }
+  
+  void play_song() {
+    curr_song.play(); 
+  }
+  
   
   // Method for drawing options bar displayed at the bottom of every map
   void display_menubar() {
@@ -52,32 +81,6 @@ class Maps{
     fill(0);
     textAlign(CENTER, CENTER);
     text("EXIT", width-100, height-50);
-  }
-  
-  // Getter/setter for song
-  void get_song() { curr_song.play(); }    // (Getter only plays song instead of returning the song)
-    
-  void set_song(int choice) 
-  { 
-    // Validate that song choice passed in is within expected parameters
-    if(choice < 1 || choice > 3)
-      return;
-       
-     // Switch statement to change song based on choice
-     switch(choice) {
-      case 1: curr_song = song1;
-      case 2: curr_song = song2;
-      case 3: curr_song = song3;
-     }
-  }
-    
-  void stop_song() {
-    curr_song.pause();
-    curr_song.rewind();
-  }
-  
-  void play_song() {
-    curr_song.play(); 
   }
   
   
