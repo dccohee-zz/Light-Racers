@@ -30,8 +30,10 @@ void draw(){
   else if(menu.get_selection().equals("settings"))
     menu.display_settings();
     
-  else if(menu.get_selection().equals("customize"))
+  else if(menu.get_selection().equals("customize")){
     menu.display_customize();
+    menu.mouse_hover_customize();
+  }
     
   else if(menu.get_selection().equals("scores"))
     menu.display_scores();
@@ -96,8 +98,11 @@ void mousePressed() {
   }
     
   // If on customize screen...
-  else if(menu.get_selection().equals("customize"))
+  else if(menu.get_selection().equals("customize")){
     menu.mousepressed_customize();
+    
+    user.set_color(menu.get_color());   // Set color of user car based on what user mouse clicked
+  }
     
   // If on scores screen...
   else if(menu.get_selection().equals("scores")){

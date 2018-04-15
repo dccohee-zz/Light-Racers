@@ -14,10 +14,12 @@ class Menu {
    // Variables to store which button the mouse is hovering over
    private int hover_menu;
    private int hover_map;
+   private int hover_customize;
    
    private int song_selection;   // Variable to track which song is selected from the settings screen
    private int num_players;   // Variable to track the number of players selected from the settings screen
    private boolean difficulty;   // Variable to track the difficulty selected from the settings screen
+   private color color_selection;   // Variable to track the customization color of the user
     
    
    // CONSTRUCTORS:
@@ -45,10 +47,11 @@ class Menu {
      song_selection = 1;
      num_players = 2;
      difficulty = false;
+     color_selection = 1;
      
      hover_map = 1;
      hover_menu = 1;
-     
+     hover_customize = 1;     
          
      curr_song = song1;
      curr_song.loop();
@@ -75,6 +78,10 @@ class Menu {
    // Getter/setter for difficulty
    boolean get_difficulty() { return this.difficulty; }
    void set_difficulty (boolean difficulty) { this.difficulty = difficulty; }
+   
+   // Getter/setter for color
+   color get_color() { return this.color; }
+   void set_color(color c) { this.color_selection = color; }
    
    // Method for drawing main menu
    void display_main_menu(){
@@ -351,16 +358,49 @@ class Menu {
      text("CUSTOMIZE", width/2, 75);
      
      // Back button
+     // Change outline of button based on mouse position
+     if(hover_customize < 0)
+       stroke(#46add4);
+     else
+       stroke(0);
+   
      ellipseMode(CENTER);
      ellipse(75, 75, 75, 75);   
      
      strokeWeight(8);
+     stroke(0);
      fill(0);
      line(95, 75, 55, 75);
      line(55, 75, 75, 55);
      line(55, 75, 75, 95);
-    
      
+     color[] customize_color = {color(0, 0, 255), #00FFFF, #39FF14, #228B22, #6816e0, #d526b5, #FD5F00, #F3F315};   // Color array to display colors user can choose from
+     int count = 0;   // Variable to iterate through every color and display it
+    
+     rectMode(CENTER);
+     // Draw grid of potential colors to choose from
+     for(int y = 1; y <= 2; ++y)
+       for(int x = 1; x <= 4; ++x){
+          // Fill outline of box based on if it is selected
+          if(color_selection == customize_color[count])
+            stroke(#46add4);
+          // Fill outline of box based on if it is hovered over
+          else if(hover_customize == 4*(y-1) + x)
+            stroke(255);
+           else
+             stroke(0);
+         
+          fill(customize_color[count++]);
+          rect((width/5)*x, 125*y+200, 100, 100);
+       }
+   }
+   
+   void mouse_pressed_settings(){
+    for(int y = 1; y <= 2; ++y)
+      for(int x = 1; x <= 4; ++x){
+        if(mouseX > (width/5)*x-50 && mouseX < (width/5)*x+50 && mouseY > 125*y+100 && mouseY < 125*y+300)
+          color_selection = (y-1)*4 + x;
+      }
    }
    
    // Method for displaying high scores screen
@@ -747,9 +787,38 @@ class Menu {
    // Method for controlling what happens when a mouse is clicked on the maps page
    void mousepressed_customize(){
       // Back button is pressed
-      if(dist(mouseX, mouseY, 75, 75) < 75/2)
+      if(dist(mouseX, mouseY, 75, 75) < 75/2){
         selection = "menu";
-         first_load = true;
+        first_load = true;
+      }
+      
+      color[] customize_color = {color(0, 0, 255), #00FFFF, #39FF14, #228B22, #6816e0, #d526b5, #FD5F00, #F3F315};   // Color array of color choices user can choose from
+      int index = 0;
+      
+      // Loop through each color option and see if any have been selected
+      for(int y = 1; y <= 2; ++y)
+        for(int x = 1; x <= 4; ++x){
+          // Check if mouse click is within bounds of a particular box
+          if(mouseX > (width/5)*x-50 && mouseX < (width/5)*x+50 && mouseY > 125*y+150 && mouseY < 125*y+250)
+            color_selection = customize_color[index++];   // Set color selection to index if true
+          else 
+            ++index;
+      }    
+   }
+   
+   // Method for detecting when the mouse position is hovering over a specific item on the customization screen
+   void mouse_hover_customize(){
+      // If hovering over back button
+      if(dist(mouseX, mouseY, 75, 75) < 75/2)
+        hover_customize = -1;
+      
+      
+      // If hovering over customization color
+      for(int y = 1; y <= 2; ++y)
+        for(int x = 1; x <= 4; ++x){
+          if(mouseX > (width/5)*x-50 && mouseX < (width/5)*x+50 && mouseY > 125*y+150 && mouseY < 125*y+250)
+            hover_customize = (y-1)*4 + x;   // Remember index of box being hovered over
+      }    
    }
    
    // Method for controlling what happens when mouse clicks exit button

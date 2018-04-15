@@ -36,6 +36,7 @@ class Racer{
   }
   
   // METHODS:
+  // Accessor and Mutator methods for data fields
   // Accessor for x-location
   int get_x(){ return this.x; }
   
@@ -47,6 +48,10 @@ class Racer{
   
   // Accessors for car width
   int get_width() { return this.car_width; }
+  
+  // Getter/Setter for color
+  color get_color() { return this.c; }
+  void set_color(color c) { this.c = c; }
   
   // Draw car
   void display(){
