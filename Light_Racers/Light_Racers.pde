@@ -8,14 +8,17 @@ import ddf.minim.ugens.*;
 Menu menu;
 Maps map;
 Game game;
-Racer user, comp1, comp2, comp3;
+Racer[] car = new Racer[4];
 
 void setup(){
  size(800, 600); 
  menu = new Menu();
  map = new Maps();
  game = new Game();
- user = new Racer(color(0, 0, 255), 10, 10, 15, 3, 0, 3);
+ car[0] = new Racer(color(0, 0, 255), 30, 30, 15, 3, 3, 0);
+ car[1] = new Racer(color(#FF0101), map.get_w()-30, map.get_h()-30, 15, 3, -3, 0);   // Begin in lower right corner
+ car[2] = new Racer(color(#CC5500), 30, map.get_h()-30, 15, 3, 3, 0);   // Begin in lower left corner
+ car[3] = new Racer(color(#CCCC00), map.get_w()-30, 30, 15, 3, -3, 0);   // Begin in upper right corner
 }
 
 void draw(){
@@ -35,8 +38,8 @@ void draw(){
     menu.mouse_hover_customize();
   }
     
-  else if(menu.get_selection().equals("scores"))
-    menu.display_scores();
+  else if(menu.get_selection().equals("playmode"))
+    menu.display_playmode();
     
   else if(menu.get_selection().equals("maps")){
     menu.display_maps();
@@ -44,27 +47,33 @@ void draw(){
   }
     
   else if(menu.get_selection().equals("game")){ 
-    if(game.get_play()){
-      // Draw car:
-      user.display();  
+    if(game.get_play()){    
+      map.display_map();   // Display current map
       
-      // Update position:
-      user.update();   
+      int death_count = 0;
       
-      // Check if destroyed:
-      boolean wall_result = map.check_wall(user.get_x(), user.get_y(), user.get_width()/2);   // Check if car is within bounds of walls
-      boolean trail_result = game.get_light_trail(user.get_x(), user.get_y());   // Check if car has run into pre-existing light trail
-      
-      game.set_light_trail(user.get_x(), user.get_y());   // Update light trail array with position of car
-      
-      // If car has hit wall or light-trail, reset the game 
-      if(wall_result || trail_result) {
-        user.reset_car();
-        game.reset();
-        map.stop_song();   // End current song
-        menu.set_selection("menu");   // Return to menu screen
-        menu.set_first_load(true);
+      // Iterate through every player and perform action
+      for(int i = 0; i < 1; ++i){
+        if(car[i].get_lives() == 0)
+          continue;
+        
+        car[i].display();   // Draw vehicle
+        car[i].update(game.get_light_trail());   // Update vehicle
+        
+        car[i].check_collision(game.get_light_trail());   // Check if car has run into obstical or wall
+        
+        death_count = (car[i].get_lives() == 0) ? ++death_count : death_count;
       }
+      
+      if(death_count == game.get_num_players()-1){
+        for(int i = 0; i < 1; ++i)
+          car[i].reset();
+          game.reset();
+          map.stop_song();
+          menu.set_selection("menu");
+          menu.set_first_load(true);
+      }
+      
     }
   }
     
@@ -74,7 +83,7 @@ void draw(){
 }
 
 void keyPressed(){
-  user.press_key(); 
+  car[0].press_key();  // Change user's car based on key presses
 }
 
 
@@ -94,19 +103,19 @@ void mousePressed() {
     // Change game settings based on what was pressed in settings screen
     map.set_song(menu.get_song_selection());   // Update song selection
     game.set_num_players(menu.get_num_players());   // Update number of players
-    game.set_difficulty(menu.get_difficulty());   // Update difficulty head
+    game.set_difficulty(menu.get_difficulty(), car);   // Update difficulty head
   }
     
   // If on customize screen...
   else if(menu.get_selection().equals("customize")){
     menu.mousepressed_customize();
     
-    user.set_color(menu.get_color());   // Set color of user car based on what user mouse clicked
+    car[0].set_color(menu.get_color());   // Set color of user car based on what user mouse clicked
   }
     
   // If on scores screen...
-  else if(menu.get_selection().equals("scores")){
-    menu.mousepressed_scores();
+  else if(menu.get_selection().equals("playmode")){
+    menu.mousepressed_playmode();
     game.set_play(true);
   }
     
@@ -124,44 +133,33 @@ void mousePressed() {
        switch(map.get_level()){       
          // Display level 1
          case 1: { 
-           map.display_level1();
            break; 
          }
          // Display level 2 and set obsticals inside light trails array
          case 2: { 
-           map.display_level2();
-           map.set_level2_obsticals(game.get_light_trail(), user.get_width()); 
+           map.set_level2_obsticals(game.get_light_trail(), car[0].get_width()); 
            break;
          }
          // Display level 3 and set obsticals inside light trails array
          case 3: { 
-           map.display_level3(); 
-           map.set_level3_obsticals(game.get_light_trail(), user.get_width());
+           map.set_level3_obsticals(game.get_light_trail(), car[0].get_width());
            break; 
          }
          // Display level 4 and set obsticals inside light trails array
-         case 4: { 
-           map.display_level4(); 
-           map.set_level4_obsticals(game.get_light_trail(), user.get_width());
+         case 4: {  
+           map.set_level4_obsticals(game.get_light_trail(), car[0].get_width());
            break; 
          }
          // Display level 5 and set obsticals inside light trails array
          case 5: { 
-           map.display_level5(); 
-           map.set_level5_obsticals(game.get_light_trail(), user.get_width());
+           map.set_level5_obsticals(game.get_light_trail(), car[0].get_width());
            break; 
          }
          // Display level 6 and set obsticals inside light trails array
          case 6: { 
-           map.display_level6(); 
-           map.set_level6_obsticals(game.get_light_trail(), user.get_width());
+           map.set_level6_obsticals(game.get_light_trail(), car[0].get_width());
            break; 
          }
-         // Default case: display level 1
-         default: { 
-           map.display_level1();
-           break; 
-         }  
        }
          
        // Initalize game after loading level
@@ -173,15 +171,17 @@ void mousePressed() {
   
   // If playing game...
   else if(menu.get_selection().equals("game")){
-    boolean exit = map.mousepressed_menubar(); 
+    map.mousepressed_menubar(); 
     
+    /*
     // If returned true, player has exited out of the game
-    if(exit) {
+    if(exit)
       game.set_play(false);   // End current game sequence
       map.stop_song();   // End current song
       menu.set_selection("menu");   // Return to menu screen
       menu.set_first_load(true);
     }
+    */
   }
      
   // Else, if exit button is pressed...

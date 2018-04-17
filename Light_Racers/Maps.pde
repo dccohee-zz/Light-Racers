@@ -30,10 +30,14 @@ class Maps{
   // Getter/Setter for game level
   void set_level(int level) { this.level = level; }
   int get_level() { return this.level; }
+  
+  // Getters for width and height
+  int get_w() { return this.w; }
+  int get_h() { return this.h; }
+  
     
   // Getter/setter for song
   void get_song() { curr_song.play(); }    // (Getter only plays song instead of returning the song)
-    
   void set_song(int choice) 
   { 
     // Validate that song choice passed in is within expected parameters
@@ -105,6 +109,26 @@ class Maps{
         if(x != 0 && y != 0)
           ellipse(x, y, 5, 5); 
   }  
+  
+  // Method for displaying results green at the end of a round
+  void display_endgame(){
+    rectMode(CORNERS);
+    fill(100, 100);
+    rect(20, 20, width-20, height-20);
+  }
+  
+  // Method for drawing the current level that has been selected
+  void display_map(){
+   // Of all possible maps, draw the one that has been selected
+   switch(level){
+    case 1: { display_level1(); break; }
+    case 2: { display_level2(); break; }
+    case 3: { display_level3(); break; }
+    case 4: { display_level4(); break; }
+    case 5: { display_level5(); break; }
+    case 6: { display_level6(); break; }     
+   }  
+  }
   
   // Method for displaying map for level 1
   void display_level1(){
@@ -357,11 +381,9 @@ class Maps{
   }  
   
    // Boolean method to return whether the exit button the menu bar was clicked or not
-  boolean mousepressed_menubar() {
+  void mousepressed_menubar() {
     if(mouseX > width-100-100/2 && mouseX < width-100+100/2 && mouseY > height-50-50/2 && mouseY < height-50+50/2)
-      return true;
-    else 
-      return false;
+      display_endgame();
   }
   
   // Function for checking if a car's position has gone outside the boundaries of the wall

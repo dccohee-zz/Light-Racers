@@ -1,6 +1,6 @@
 class Game {
   // DATA FIELDS
-  private boolean[][] light_trail;
+  public boolean[][] light_trail;
   private int score;
   private int num_players;
   private boolean difficulty;
@@ -50,7 +50,22 @@ class Game {
     
     // Getter/setter for difficulty
     boolean get_difficulty() { return this.difficulty; }
-    void set_difficulty(boolean difficulty) { this.difficulty = difficulty; }
+    
+    void set_difficulty(boolean difficulty, Racer[] cars) { 
+      this.difficulty = difficulty;   // Set difficulty
+      
+      // Iterate through every car in array
+      for(int i = 0; i < cars.length; ++i){
+        // If difficulty increased, increase speed
+        if(difficulty)
+          car[i].set_speed(3);
+        // Else, decrease speed
+        else
+          car[i].set_speed(1);
+        
+        car[i].reset();   // Reset cars with new speeds
+      }
+    }
     
     // Getter/setter for play
     boolean get_play() { return this.play; }

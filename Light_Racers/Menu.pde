@@ -47,7 +47,7 @@ class Menu {
      song_selection = 1;
      num_players = 2;
      difficulty = false;
-     color_selection = 1;
+     color_selection = color(0,0,255);
      
      hover_map = 1;
      hover_menu = 1;
@@ -80,8 +80,8 @@ class Menu {
    void set_difficulty (boolean difficulty) { this.difficulty = difficulty; }
    
    // Getter/setter for color
-   color get_color() { return this.color; }
-   void set_color(color c) { this.color_selection = color; }
+   color get_color() { return this.color_selection; }
+   void set_color(color c) { this.color_selection = c; }
    
    // Method for drawing main menu
    void display_main_menu(){
@@ -160,7 +160,7 @@ class Menu {
      fill(255);
      rect(3*width/4, 400, 200, 50);
      fill(0);
-     text("Customize", 3*width/4, 400);
+     text("Play Mode", 3*width/4, 400);
      
      // Scores button
      // Color outline based on mouse hover position
@@ -172,7 +172,7 @@ class Menu {
      fill(255);
      rect(3*width/4, 475, 200, 50);
      fill(0);
-     text("Scores", 3*width/4, 475);
+     text("Customize", 3*width/4, 475);
      
      // Exit button
      // Color outline based on mouse hover position
@@ -395,18 +395,11 @@ class Menu {
        }
    }
    
-   void mouse_pressed_settings(){
-    for(int y = 1; y <= 2; ++y)
-      for(int x = 1; x <= 4; ++x){
-        if(mouseX > (width/5)*x-50 && mouseX < (width/5)*x+50 && mouseY > 125*y+100 && mouseY < 125*y+300)
-          color_selection = (y-1)*4 + x;
-      }
-   }
    
    // Method for displaying high scores screen
-   void display_scores(){
+   void display_playmode(){
      // Load image for scores page
-     background = loadImage("Scores.jpg");
+     background = loadImage("playmode.jpg");
      tint(200, 150);
      image(background, 0, 0);
      
@@ -414,7 +407,7 @@ class Menu {
      textFont(font, 50);
      textAlign(CENTER, CENTER);
      fill(255);
-     text("HIGH SCORES", width/2, 75);
+     text("PLAY MODE", width/2, 75);
      
      // Back button
      ellipseMode(CENTER);
@@ -426,23 +419,7 @@ class Menu {
      line(55, 75, 75, 55);
      line(55, 75, 75, 95);
      
-     fill(100, 100);
-     rectMode(CORNERS);
-     rect(50, 150, width-50, height-25);
      
-     // Display rankings:
-     textFont(font, 28);
-     textAlign(LEFT);
-     fill(255);
-     for(int i = 1; i <= 10; ++i){
-       text(Integer.toString(i) + ".", 75, 155 + 40*i);
-     }
-     
-     // Display high scores:
-     textAlign(RIGHT);
-     for(int i = 1; i <= 10; ++i){
-      text(Integer.toString((int)random(500)), width-75, 155 + 40*i);
-     }
    }
  
  
@@ -599,14 +576,14 @@ class Menu {
       }
         
       // Customize button is pressed
-      else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2){
-        selection = "customize";
-        first_load = true;  
-    }
+      else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2)
+        selection = "playmode";
   
       // Scores button is pressed    
-      else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 475-50/2 && mouseY < 475+50/2)
-        selection = "scores";
+      else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 475-50/2 && mouseY < 475+50/2){
+        selection = "customize";
+        first_load = true;
+      }
         
       // Exit button is pressed    
       else if(mouseX < width/2+200/2 && mouseX > width/2-200/2 && mouseY > 550-50/2 && mouseY < 550+50/2)
@@ -627,11 +604,11 @@ class Menu {
       else if(mouseX < width/4+200/2 && mouseX > width/4-200/2 && mouseY > 475-50/2 && mouseY < 475+50/2) 
         hover_menu = 3;
         
-      // Customize button is pressed
+      // Play Mode button is pressed
       else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2)
         hover_menu = 4;
   
-      // Scores button is pressed    
+      // Customize button is pressed    
       else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 475-50/2 && mouseY < 475+50/2)
         hover_menu = 5;
         
@@ -690,7 +667,7 @@ class Menu {
    
    
    // Method for controlling what happens when a mouse is clicked on the scores page
-   void mousepressed_scores(){
+   void mousepressed_playmode(){
      // Back button is pressed
       if(dist(mouseX, mouseY, 75, 75) < 75/2)
         selection = "menu";
