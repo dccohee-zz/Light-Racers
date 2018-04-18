@@ -63,24 +63,25 @@ class Maps{
   
   
   // Method for drawing options bar displayed at the bottom of every map
-  void display_menubar() {
-    background(70, 173, 212);
+  void display_menubar(Racer[] cars, int num_players) {
+    fill(150);
+    rectMode(CORNERS);
+    rect(0, height-100, width, height);
     
-    // Display score
-    fill(0);
-    textFont(font, 28);
-    textAlign(LEFT, CENTER);
-    text("SCORE: ", 50, height-50);
-    
-    // Display item slot
-    text("ITEM:", width/2-80, height-50);
-    rectMode(CENTER);
-    noFill();
-    stroke(3);
-    rect(width/2+40, height-50, 50, 50);
+    ellipseMode(CENTER); 
+   
+    // Display number of players and their scores
+    for(int i = 0; i < num_players; ++i){
+       for(int j = 0; j < cars[i].get_lives(); ++j){
+         fill(cars[i].get_color());
+         ellipse(15*(j+1) + (i*125) + 100, height-60, 10, 10);
+       }
+    }
     
     // Display exit button
     fill(255);
+    rectMode(CENTER);
+    stroke(0); strokeWeight(4);
     rect(width-100, height-50, 100, 50);
     fill(0);
     textAlign(CENTER, CENTER);
@@ -130,10 +131,21 @@ class Maps{
    }  
   }
   
+  // Method for add all obstical locations to the light trail array based on the level selected
+  void set_obsticals(boolean[][] light_trail, int car_width) {
+    switch(level){
+     case 1: { break; }
+     case 2: { set_level2_obsticals(light_trail, car_width); break; }
+     case 3: { set_level3_obsticals(light_trail, car_width); break; }
+     case 4: { set_level4_obsticals(light_trail, car_width); break; }
+     case 5: { set_level5_obsticals(light_trail, car_width); break; }
+     case 6: { set_level6_obsticals(light_trail, car_width); break; }
+    }
+  }
+  
   // Method for displaying map for level 1
   void display_level1(){
      play_song();
-     display_menubar();
      display_playarea();
   }
     
@@ -141,7 +153,6 @@ class Maps{
   // Method for displaying map for level 2
   void display_level2(){
     play_song();
-    display_menubar();
     display_playarea();
     
     fill(175);
@@ -156,7 +167,6 @@ class Maps{
   // Method for displaying map for level 3
   void display_level3(){
     play_song();
-    display_menubar();
     display_playarea();
     
     fill(175);
@@ -171,7 +181,6 @@ class Maps{
   // Method for displaying map for level 4
   void display_level4(){
     play_song();
-    display_menubar();
     display_playarea();
     
     fill(175);
@@ -183,7 +192,6 @@ class Maps{
   // Method for displaying map for level 5
   void display_level5(){
     play_song();
-    display_menubar();
     display_playarea();
     
     fill(175); 
@@ -205,7 +213,6 @@ class Maps{
   // Method for displaying map for level 6
   void display_level6(){
     play_song();
-    display_menubar();
     display_playarea();
     
     rectMode(CORNER);

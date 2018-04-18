@@ -21,7 +21,7 @@ class Racer{
    vy = speed;
    light_trail_x = new IntList();
    light_trail_y = new IntList(); 
-   lives = 3;
+   lives = 1;
   }
   
   // Overloaded Constructor
@@ -37,7 +37,7 @@ class Racer{
     this.vy = vy;
     light_trail_x = new IntList();
     light_trail_y = new IntList();    
-    lives = 3;
+    lives = 1;
   }
   
   // METHODS:
@@ -83,52 +83,13 @@ class Racer{
    
   // Update car's position based on speed
   void update(boolean[][] light_trail){
-    // Update car location based on velocity
+    // Update car location based on velocity  
+    light_trail[x][y] = true;
+    this.light_trail_x.append(x); 
+    this.light_trail_y.append(y);
+    
     x += vx; 
     y += vy;
-    
-    // If a car is traveling at a certain speed, pixels in between its movements will not be marked as visited
-    // Thus, loop through every pixel from its previous location to its current location and mark as visited
-    for(int i = 1; i <= speed; ++i){
-      // If traveling in the x-direction
-      if(vx != 0 && vy == 0 && x + i < light_trail.length-1 && x - i >= 0){
-        // If traveling right
-        if(vx > 0){
-          light_trail[x-i][y] = true;   // Mark all pixels behind it as visited 
-          
-          // Appended visted location to personal light trail
-          this.light_trail_x.append(x-i); 
-          this.light_trail_y.append(y);
-        }
-        // If traveling left
-        else{
-          light_trail[x+i][y] = true;   // Mark all pixels in front of it as visited
-        
-          // Appended visted location to personal light trail
-          this.light_trail_x.append(x+i); 
-          this.light_trail_y.append(y);
-        }
-      }
-      // If traveling in the y-direction
-      else if(vy != 0 && vx == 0 && y + i < light_trail[0].length-1 && y - i >= 0) {
-        // If traveling down
-        if(vy > 0){
-          light_trail[x][y-i] = true;   // Mark all pixels above it as visited
-              
-          // Appended visted location to personal light trail
-          this.light_trail_x.append(x); 
-          this.light_trail_y.append(y-i);       
-        }
-        // If traveling up
-        else{
-          light_trail[x][y+i] = true;   // Mark all pixels below it as visited
-          
-          // Appended visted location to personal light trail
-          this.light_trail_x.append(x); 
-          this.light_trail_y.append(y+i);  
-        }
-      }
-    }
   }
   
   // Method for respawning a car. It inputs the master light-trail data structure and sets the cars previous light trail to be untouched
@@ -169,46 +130,19 @@ class Racer{
     boolean collision = false;
     
     // Check if car has extended beyond boundaries of wall
-    if(x < 0 || y < 0 || x >= light_trail.length || y >= light_trail[0].length){
+    if(x < 0 || y < 0 || x >= light_trail.length || y >= light_trail[0].length)
       collision = true;
-    }
+    
     
     // Check if car has run into obstical
-    else {
-     // Because the car is moving at a certain speed, it may not detect pixels in between its movement
-     // Loop through each pixel from its previous location to its current location to check if it has passed over an obstical
-     for(int i = 1; i <= speed; ++i){
-      // If traveling in the x-direction
-      if(vx != 0 && vy == 0 && x + i < light_trail.length && x - i >= 0){
-        // If traveling right
-        if(vx > 0)
-          collision = light_trail[x+i][y];
-        
-        // If traveling left
-        else
-          collision = light_trail[x-i][y];
-        
-      }
-      
-      // If traveling in the y-direction
-      else if(vy != 0 && vx == 0 && y + i < light_trail[0].length && y - i >= 0) {
-        // If traveling down
-        if(vy > 0)
-          collision = light_trail[x][y+i];
-        
-        // If traveling up
-        else
-          collision = light_trail[x][y-i];
-        
-      }
+    else if(light_trail[x][y] == true)
+      collision = true;
+
+    // If a collision occurred
+    if(collision){
+      --lives;   // Diminish number of lives 
+      respawn(light_trail);   // Respawn car
     }
-  }
-  
-  // If a collision occurred
-  if(collision){
-    --lives;   // Diminish number of lives 
-    respawn(light_trail);   // Respawn car
-  }
 }
   
   
@@ -261,7 +195,7 @@ class Racer{
   
   // Function for randomly changing AI direction to give it a more human-feeling.
   void update_AI(boolean[][] light_trail){
-     int change = (int)random(100);   // Generate a random number to determine if to change direction
+     int change = (int)random(500);   // Generate a random number to determine if to change direction
      
      // If a certain number is generated, randomly change direction
      if(change == 1){

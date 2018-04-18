@@ -20,6 +20,7 @@ class Menu {
    private int num_players;   // Variable to track the number of players selected from the settings screen
    private boolean difficulty;   // Variable to track the difficulty selected from the settings screen
    private color color_selection;   // Variable to track the customization color of the user
+   private int lives;   // Variable to track the number of lives for each car
     
    
    // CONSTRUCTORS:
@@ -48,6 +49,7 @@ class Menu {
      num_players = 2;
      difficulty = false;
      color_selection = color(0,0,255);
+     lives = 1;
      
      hover_map = 1;
      hover_menu = 1;
@@ -82,6 +84,15 @@ class Menu {
    // Getter/setter for color
    color get_color() { return this.color_selection; }
    void set_color(color c) { this.color_selection = c; }
+   
+   // Getter/setting for map
+   int get_map() { return this.map; }
+   void set_map(int map) { this.map = map; }
+   
+   // Getter/setter for lives
+   int get_lives() { return this.lives; }
+   void set_lives(int lives) { this.lives = lives; }
+   
    
    // Method for drawing main menu
    void display_main_menu(){
@@ -160,7 +171,7 @@ class Menu {
      fill(255);
      rect(3*width/4, 400, 200, 50);
      fill(0);
-     text("Play Mode", 3*width/4, 400);
+     text("Maps", 3*width/4, 400);
      
      // Scores button
      // Color outline based on mouse hover position
@@ -277,34 +288,35 @@ class Menu {
      ellipse(width/4+150*(num_players-1), 200, 5, 5);
      
      
-     // Draw possible items to use:    
+     // Draw number of lives to choose from:   
      textAlign(RIGHT);
      fill(255);
-     text("Items: ", width/4+25, 300);
+     text("Lives: ", width/4+25, 300);
      textAlign(CENTER);
-     text("Item1", width/4+100, 300);
-     text("Item2", width/4+200, 300);
-     text("Item3", width/4+300, 300);
-     text("Item4", width/4+400, 300);
-     text("Item5", width/4+500, 300);
+     text("1", width/4+150, 300);
+     text("2", width/4+300, 300);
+     text("3", width/4+450, 300);
      
-     // Boxes to select option:
+     // Bubbles to select option of lives:
      rectMode(CENTER);
-     rect(width/4+100, 325, 15, 15);
-     rect(width/4+200, 325, 15, 15);
-     rect(width/4+300, 325, 15, 15);
-     rect(width/4+400, 325, 15, 15);
-     rect(width/4+500, 325, 15, 15);
+     ellipse(width/4+150, 325, 15, 15);
+     ellipse(width/4+300, 325, 15, 15);
+     ellipse(width/4+450, 325, 15, 15);
      
-     // Show possible curr_songs to play with: 
+     // Fill bubble of select option for number of lives
+     fill(0);
+     ellipse(width/4+150*(lives), 325, 5, 5);
+     
+     // Show possible songs to play with: 
      textAlign(RIGHT);
+     fill(255);
      text("Music: ", width/4+25, 425);
      textAlign(CENTER);
      text("Song 1", width/4 + 150, 425);
      text("Song 2", width/4 + 300, 425);
      text("Song 3", width/4 + 450, 425);
     
-     // Bubbles to select option:
+     // Bubbles to select option of songs:
      ellipse(width/4+150, 450, 15, 15);
      ellipse(width/4+300, 450, 15, 15);
      ellipse(width/4+450, 450, 15, 15);
@@ -318,16 +330,16 @@ class Menu {
      // Draw box highlighing selected difficulty
      fill(70, 173, 212);
      if(difficulty) 
-       rect(width/4+400, 525, 100, 50);   // Draw box around 'Hard' difficulty if selected
+       rect(width/4+400, 525, 150, 50);   // Draw box around 'Hard' difficulty if selected
      else
-       rect(width/4+200, 525, 100, 50);   // Else, draw box around 'Easy' difficulty if selected
+       rect(width/4+200, 525, 150, 50);   // Else, draw box around 'Easy' difficulty if selected
      
      textAlign(RIGHT, CENTER);
      fill(255);
      text("Difficulty: ", width/4+25, 525);
      textAlign(CENTER, CENTER);
-     text("Easy", width/4+200, 525);
-     text("Hard", width/4+400, 525);
+     text("Beginner", width/4+200, 525);
+     text("Normal", width/4+400, 525);
    }
    
    
@@ -395,33 +407,6 @@ class Menu {
        }
    }
    
-   
-   // Method for displaying high scores screen
-   void display_playmode(){
-     // Load image for scores page
-     background = loadImage("playmode.jpg");
-     tint(200, 150);
-     image(background, 0, 0);
-     
-     // Screen header
-     textFont(font, 50);
-     textAlign(CENTER, CENTER);
-     fill(255);
-     text("PLAY MODE", width/2, 75);
-     
-     // Back button
-     ellipseMode(CENTER);
-     ellipse(75, 75, 75, 75);   
-     
-     strokeWeight(8);
-     fill(0);
-     line(95, 75, 55, 75);
-     line(55, 75, 75, 55);
-     line(55, 75, 75, 95);
-     
-     
-   }
- 
  
    // Method for displaying maps for the user to select from
    void display_maps(){     
@@ -563,7 +548,7 @@ class Menu {
    void mousepressed_menu(){
      // Play Game button is pressed
       if(mouseX < width/2+245/2 && mouseX > width/2-245/2 && mouseY > 300-70/2 && mouseY < 300+70/2)
-        selection = "maps";
+        selection = "game";
           
       // Instructions button is pressed
       else if(mouseX < width/4+200/2 && mouseX > width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2)
@@ -577,7 +562,7 @@ class Menu {
         
       // Customize button is pressed
       else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 400-50/2 && mouseY < 400+50/2)
-        selection = "playmode";
+        selection = "maps";
   
       // Scores button is pressed    
       else if(mouseX < 3*width/4+200/2 && mouseX > 3*width/4-200/2 && mouseY > 475-50/2 && mouseY < 475+50/2){
@@ -656,6 +641,14 @@ class Menu {
         song_selection = 3;
       }
       
+      // Mouse pressed to change lives
+      if(dist(mouseX, mouseY, width/4+150, 325) < 15/2)
+        lives = 1;
+      if(dist(mouseX, mouseY, width/4+300, 325) < 15/2)
+        lives = 2;
+      if(dist(mouseX, mouseY, width/4+450, 325) < 15/2)
+        lives = 3;
+      
      // Mouse pressed to change difficulty
      // Mouse pressed on hard difficulty 
      if(mouseX > width/4+350 && mouseX < width/4+450 && mouseY > 475 && mouseY < 575)
@@ -666,64 +659,40 @@ class Menu {
    }
    
    
-   // Method for controlling what happens when a mouse is clicked on the scores page
-   void mousepressed_playmode(){
-     // Back button is pressed
-      if(dist(mouseX, mouseY, 75, 75) < 75/2)
-        selection = "menu";
-   }
-   
    // Method for controlling what happens when a mouse is clicked on the maps page. The method returns a number corresponding to the level selected from this page. 
    // [1-6] corresponding to levels 1-6. 0 indicates the play button has been pressed. Any negative number indicates that all other events.
-   int mousepressed_maps(){
+   void mousepressed_maps(){
       // Back button is pressed
-      if(dist(mouseX, mouseY, 75, 75) < 75/2){
+      if(dist(mouseX, mouseY, 75, 75) < 75/2)
         selection = "menu";
-        return -1;
-      }
       
       // Map 1 is selected
-      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2){
+      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
         map = 1;
-        return 1;
-      }
-      
+        
       // Map 2 is selected
-      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2){
+      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2)
         map = 2;
-        return 2;
-      }
       
       // Map 3 is selected
-      else if(mouseX > 3*width/4+50-200/2 && mouseX < 3*width/4+50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2) {
+      else if(mouseX > 3*width/4+50-200/2 && mouseX < 3*width/4+50+200/2 && mouseY > 225-125/2 && mouseY < 225+125/2) 
         map = 3;
-        return 3;
-      }
-      
+             
       // Map 4 is selected
-      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2) {
+      else if(mouseX > width/4-50-200/2 && mouseX < width/4-50+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2) 
         map = 4;
-        return 4;
-      }
       
       // Map 5 is selected
-      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2) {
+      else if(mouseX > 2*width/4-200/2 && mouseX < 2*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2) 
         map = 5;
-        return 5;
-      }
       
       // Map 6 is selected
-      else if(mouseX > 3*width/4-200/2 && mouseX < 3*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2){
+      else if(mouseX > 3*width/4-200/2 && mouseX < 3*width/4+200/2 && mouseY > 225-425/2 && mouseY < 225+425/2)
         map = 6;
-        return 6;
-      }
-        
+      
       // Start button is pressed
       else if(mouseX > width/2-175/2 && mouseX < width/2+175/2 && mouseY > height-40-50/2 && mouseY < height-40+50/2)
-        return 0;
-      
-      else 
-        return -1;
+        selection = "game";
    }   
    
    // Method for changing the outline of an item when the mouse hovers over it in the maps screen
