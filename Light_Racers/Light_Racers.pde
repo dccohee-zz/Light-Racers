@@ -45,16 +45,18 @@ void draw(){
   }
     
   else if(menu.get_selection().equals("game")){ 
+    // If in game mode and round is ongoing
     if(game.get_play()){         
       map.display_menubar(car, game.get_num_players());   // Display menu bar at bottom of screen
       map.display_map();   // Display current map
       
-      int death_count = 0;
+      int death_count = 0;   // Variable keeping track of number of cars destroyed
       
       // Iterate through every player and perform action
       for(int i = 0; i < game.get_num_players(); ++i){
+        // If car has already been destroyed, ignore displaying and updating
         if(car[i].get_lives() == 0){
-          ++death_count;
+          ++death_count;   // Increase number of cars destroyed
           continue;
         }
         
@@ -63,21 +65,27 @@ void draw(){
         
         car[i].check_collision(game.get_light_trail());   // Check if car has run into obstical or wall
         
+        // All cars except the first one are AI
         if(i != 0){
-         car[i].update_AI(game.get_light_trail());      
-         car[i].check_AI(game.get_light_trail());
+         car[i].update_AI(game.get_light_trail());   // Randomly update AI position 
+         car[i].check_AI(game.get_light_trail());   // Check if obstical is in front of AI
         }
       }
       
+      // Check if all but 1 player has been destroyed
       if(death_count == game.get_num_players()-1){
-        for(int i = 0; i < game.get_num_players(); ++i)
-          car[i].reset();
-          game.reset();
-          map.stop_song();
-          menu.set_selection("menu");
-          menu.set_first_load(true);
-      }
-      
+        game.set_play(false);    // End game round
+      }      
+    }
+    // Else, if in game mode and round is over
+    else {
+      int winner = 0;   // Variable for tracking the player that one the round
+      // Iterate through all players and find the one that is still alive
+      for(int i = 0; i < game.get_num_players(); ++i)
+        if(car[i].lives != 0)
+          winner = i+1;    
+        
+      map.display_endgame(winner);
     }
   }
     
@@ -150,18 +158,37 @@ void mousePressed() {
   
   // If playing game...
   else if(menu.get_selection().equals("game")){
-    map.mousepressed_menubar(); 
+    int result = -1; 
     
-    /*
-    // If returned true, player has exited out of the game
-    if(exit)
-      game.set_play(false);   // End current game sequence
-      map.stop_song();   // End current song
-      menu.set_selection("menu");   // Return to menu screen
-      menu.set_first_load(true);
+    // If round if ongoing
+    if(game.get_play())
+      result = map.mousepressed_menubar();   // Check if button is pressed on menu bar
+    // Else, if round if over
+    else
+      result = map.mousepressed_endgame();   // Check if button is pressed on end game screen
+      
+    // 0 indicates restart round
+    if(result == 0) {      
+      // Reset properties of car for when game begins again
+      for(int i = 0; i < game.get_num_players(); ++i)
+        car[i].reset();
+          
+      game.reset();    
     }
-    */
-  }
+      
+    // 1 indicates exit game
+    else if(result == 1){
+      map.stop_song();
+      menu.set_selection("menu");
+      menu.set_first_load(true);
+          
+      // Reset properties of car for when game begins again
+      for(int i = 0; i < game.get_num_players(); ++i)
+         car[i].reset();
+          
+      game.reset();
+    }
+}
      
   // Else, if exit button is pressed...
   else if(menu.get_selection().equals("exit"))

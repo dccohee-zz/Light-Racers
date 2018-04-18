@@ -69,15 +69,22 @@ class Maps{
     rect(0, height-100, width, height);
     
     ellipseMode(CENTER); 
-   
+    textFont(font, 18);
+    textAlign(CENTER, CENTER);
+      
     // Display number of players and their scores
     for(int i = 0; i < num_players; ++i){
        for(int j = 0; j < cars[i].get_lives(); ++j){
+         // Draw number of lives for each car      
          fill(cars[i].get_color());
          ellipse(15*(j+1) + (i*125) + 100, height-60, 10, 10);
+         
+         // Display car's player number below lives
+         fill(255);
+         text("Player " + Integer.toString(i+1), 105+125*i+8*cars[i].get_lives(), height-40);
        }
     }
-    
+        
     // Display exit button
     fill(255);
     rectMode(CENTER);
@@ -86,6 +93,14 @@ class Maps{
     fill(0);
     textAlign(CENTER, CENTER);
     text("EXIT", width-100, height-50);
+  }
+  
+  // Method to return whether the exit button the menu bar was clicked or not
+  int mousepressed_menubar() {
+    if(mouseX > width-100-100/2 && mouseX < width-100+100/2 && mouseY > height-50-50/2 && mouseY < height-50+50/2)
+      return 1;
+    
+    return -1;   
   }
   
   
@@ -98,7 +113,7 @@ class Maps{
     rect(0, 0, width, height-100);
     
     // Draw grid
-    stroke(100);
+    stroke(50);
     for(float x = 0; x < w; x += 100)
       line(x, 0, x, h);
       
@@ -112,10 +127,51 @@ class Maps{
   }  
   
   // Method for displaying results green at the end of a round
-  void display_endgame(){
+  void display_endgame(int winner){
+    // Display back drop
     rectMode(CORNERS);
-    fill(100, 100);
-    rect(20, 20, width-20, height-20);
+    fill(0, 150);
+    strokeWeight(8);
+    stroke(70, 173, 212);
+    rect(100, 50, width-100, height-150);
+    
+    // Display game over text
+    textFont(font, 40);
+    textAlign(CENTER, CENTER);
+    fill(255);
+    text("GAME OVER", width/2, 100);
+    
+    // Display winner
+    textSize(35);
+    text("PLAYER " + Integer.toString(winner) + " WINS", width/2, 140);
+    
+    // Display play again button at bottom
+    rectMode(CENTER);
+    fill(255);
+    strokeWeight(3);
+    stroke(0); 
+    rect(width/4, height-200, 125, 50);
+    textSize(25);
+    fill(0);
+    text("Restart", width/4, height-200);
+    
+    // Display exit buttom at bottom
+    fill(255);
+    rect(3*width/4, height-200, 125, 50);
+    fill(0);
+    text("Exit", 3*width/4, height-200);
+  }
+  
+  int mousepressed_endgame(){
+    // If mouse presses on restart button
+    if(mouseX > width/4 - 125/2 && mouseX < width/4 + 125/2 && mouseY > height-200-50/2 && mouseY < height-200+50/2)
+      return 0;
+    
+    // If mouse presses on exit button
+    else if(mouseX > 3*width/4 - 125/2 && mouseX < 3*width/4 + 125/2 && mouseY > height-200-50/2 && mouseY < height-200+50/2)
+      return 1;
+      
+    return -1;
   }
   
   // Method for drawing the current level that has been selected
@@ -387,20 +443,4 @@ class Maps{
             light_trails[x][y] = true;
   }  
   
-   // Boolean method to return whether the exit button the menu bar was clicked or not
-  void mousepressed_menubar() {
-    if(mouseX > width-100-100/2 && mouseX < width-100+100/2 && mouseY > height-50-50/2 && mouseY < height-50+50/2)
-      display_endgame();
-  }
-  
-  // Function for checking if a car's position has gone outside the boundaries of the wall
-  boolean check_wall(int x, int y, int car_width){
-    if(x < 0+car_width || x > w-car_width)  
-      return true;
-    else if(y < 0+car_width || y > h-car_width)
-      return true;
-    else 
-      return false;
-  }
- 
  }

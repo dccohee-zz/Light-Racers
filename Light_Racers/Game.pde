@@ -83,6 +83,6 @@ class Game {
        for(int y = 0; y < light_trail[x].length; ++y)
          light_trail[x][y] = false;
          
-      play = false;
+      play = true;
     }
  }

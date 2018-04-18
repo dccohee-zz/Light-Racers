@@ -8,6 +8,7 @@ class Racer{
   private float speed; 
   private IntList light_trail_x, light_trail_y;    // List to track each car's personal light trail
   private int lives;   // Variable to track the number of lives for a car
+  private int start_lives;   // Variable to track the number of lives a car begins with so it knows when restarting
   
   // CONSTRUCTORS:
   // Default Constructor
@@ -37,7 +38,8 @@ class Racer{
     this.vy = vy;
     light_trail_x = new IntList();
     light_trail_y = new IntList();    
-    lives = 1;
+    start_lives = 1;
+    lives = start_lives;    
   }
   
   // METHODS:
@@ -61,7 +63,10 @@ class Racer{
   
   // Getter/setter for lives
   int get_lives() { return this.lives; }
-  void set_lives(int lives) { this.lives = lives; }
+  void set_lives(int lives) { 
+    this.lives = lives; 
+    this.start_lives = lives;
+  }
   
   // Draw car
   void display(){
@@ -274,7 +279,7 @@ class Racer{
     void reset(){
       light_trail_x.clear();
       light_trail_y.clear();
-      lives = 3;
+      lives = start_lives;
       x = start_x; 
       y = start_y;
       
