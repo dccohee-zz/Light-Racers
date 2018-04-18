@@ -15,11 +15,10 @@ void setup(){
  menu = new Menu();
  map = new Maps();
  game = new Game();
- car[0] = new Racer(color(0, 0, 255), 30, 30, 10, 1, 0, 1);
- car[1] = new Racer(color(#FF0101), map.get_w()-29, map.get_h()-29, 10, 1, 0, 1);   // Begin in lower right corner
- 
- car[2] = new Racer(color(#CC5500), 30, map.get_h()-29, 10, 1, 1, 0);   // Begin in lower left corner
- car[3] = new Racer(color(#CCCC00), map.get_w()-29, 30, 10, 1, -1, 0);   // Begin in upper right corner
+ car[0] = new Player1(color(0, 0, 255), 30, 30, 10, 1, 0, 1);
+ car[1] = new Player2(color(#FF0101), map.get_w()-29, map.get_h()-29, 10, 1, 0, 1);   // Begin in lower right corner
+ car[2] = new AI(color(#CC5500), 30, map.get_h()-29, 10, 1, 1, 0);   // Begin in lower left corner
+ car[3] = new AI(color(#CCCC00), map.get_w()-29, 30, 10, 1, -1, 0);   // Begin in upper right corner
 }
 
 void draw(){
@@ -62,14 +61,7 @@ void draw(){
         
         car[i].display();   // Draw vehicle
         car[i].update(game.get_light_trail());   // Update vehicle
-        
         car[i].check_collision(game.get_light_trail());   // Check if car has run into obstical or wall
-        
-        // All cars except the first one are AI
-        if(i != 0){
-         car[i].update_AI(game.get_light_trail());   // Randomly update AI position 
-         car[i].check_AI(game.get_light_trail());   // Check if obstical is in front of AI
-        }
       }
       
       // Check if all but 1 player has been destroyed
@@ -82,7 +74,7 @@ void draw(){
       int winner = 0;   // Variable for tracking the player that one the round
       // Iterate through all players and find the one that is still alive
       for(int i = 0; i < game.get_num_players(); ++i)
-        if(car[i].lives != 0)
+        if(car[i].get_lives() != 0)
           winner = i+1;    
         
       map.display_endgame(winner);
@@ -95,7 +87,8 @@ void draw(){
 }
 
 void keyPressed(){
-  car[0].press_key();  // Change user's car based on key presses
+  car[0].press_key();  // Change player 1 direction based on key presses
+  car[1].press_key();   // Change player 2 direction based on key pressed
 }
 
 
