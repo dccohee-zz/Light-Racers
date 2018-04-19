@@ -78,6 +78,7 @@ class Game {
       light_trail[x][y] = true;
     }
     
+    // Method for reseting the game settings after the round is over
     void reset(){
      for(int x = 0; x < light_trail.length; ++x)  
        for(int y = 0; y < light_trail[x].length; ++y)

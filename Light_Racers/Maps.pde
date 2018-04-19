@@ -88,7 +88,13 @@ class Maps{
     // Display exit button
     fill(255);
     rectMode(CENTER);
-    stroke(0); strokeWeight(4);
+    // Change outline of button if mouse is hovering over it
+    if(mouseX > width-150 && mouseX < width-50 && mouseY > height-75 && mouseY < height-25)
+      stroke(70, 173, 212);
+    else
+      stroke(0);    
+    
+    strokeWeight(4);
     rect(width-100, height-50, 100, 50);
     fill(0);
     textAlign(CENTER, CENTER);
@@ -127,7 +133,7 @@ class Maps{
   }  
   
   // Method for displaying results green at the end of a round
-  void display_endgame(int winner){
+  void display_endgame(IntList ranking){
     // Display back drop
     rectMode(CORNERS);
     fill(0, 150);
@@ -141,27 +147,51 @@ class Maps{
     fill(255);
     text("GAME OVER", width/2, 100);
     
-    // Display winner
+    // Display winner at top
     textSize(35);
-    text("PLAYER " + Integer.toString(winner) + " WINS", width/2, 140);
+    text("PLAYER " + Integer.toString(ranking.get(ranking.size()-1)) + " WINS", width/2, 140);
+    
+    // Display list of rankings
+    for(int i = 1; i <= ranking.size(); ++i){
+     textSize(25);
+     textAlign(LEFT, CENTER);
+     text(Integer.toString(i), width/3, 175+35*i);
+     textAlign(RIGHT, CENTER);
+     text("Player "+ ranking.get(ranking.size()-i), 2*width/3, 175+35*i);
+    }
     
     // Display play again button at bottom
     rectMode(CENTER);
     fill(255);
     strokeWeight(3);
-    stroke(0); 
+      
+    // Change outline of button if mouse is hovering over it
+    if(mouseX > width/4 - 125/2 && mouseX < width/4 + 125/2 && mouseY > height-200-50/2 && mouseY < height-200+50/2)
+      stroke(70, 173, 212);
+     else
+       stroke(0);
+       
     rect(width/4, height-200, 125, 50);
+    textAlign(CENTER, CENTER);
     textSize(25);
     fill(0);
     text("Restart", width/4, height-200);
     
     // Display exit buttom at bottom
     fill(255);
+    
+    // Change outline color of button if mouse is hovering over it
+    if(mouseX > 3*width/4 - 125/2 && mouseX < 3*width/4 + 125/2 && mouseY > height-200-50/2 && mouseY < height-200+50/2)
+      stroke(70, 173, 212);
+    else
+      stroke(0);
+      
     rect(3*width/4, height-200, 125, 50);
     fill(0);
     text("Exit", 3*width/4, height-200);
   }
   
+  // Method for performing actions when the mouse clicks on a button on the end game screen
   int mousepressed_endgame(){
     // If mouse presses on restart button
     if(mouseX > width/4 - 125/2 && mouseX < width/4 + 125/2 && mouseY > height-200-50/2 && mouseY < height-200+50/2)
