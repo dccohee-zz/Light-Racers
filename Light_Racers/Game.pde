@@ -1,6 +1,14 @@
+/*
+Authors: Dalton Cale Cohee and Douglas Easom 
+Date: 8 April 2018
+Program: Light Racer: Game
+Program Description: This class contains all game settings for each round. It includes data fields and getters/setters for the number of players, the difficulty, the level selected, when the game is in session, and a 2D array for the spaces on the grid 
+that have been occupied. 
+*/
+
 class Game {
   // DATA FIELDS
-  public boolean[][] light_trail;
+  public boolean[][] light_trail;   // Array to map the playgrid to indicate which spaces have already been occupied by players
   private int score;
   private int num_players;
   private boolean difficulty;

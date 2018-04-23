@@ -1,3 +1,10 @@
+/*
+Authors: Dalton Cale Cohee and Douglas Easom 
+Date: 6 April 2018
+Program: Light Racer
+Program Description: This class acts as the "main" class for the game. It brings together all other classes to create a playable game.   
+*/
+
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.effects.*;
@@ -47,6 +54,15 @@ void draw(){
     
     // If in game mode and round is ongoing
     if(game.get_play()){         
+      
+      // If loaded for first time, initalize sound effects
+      if(menu.get_first_load()){
+        for(int i = 0; i < game.get_num_players(); ++i)
+          car[i].start_sound();
+          
+        menu.set_first_load(false);   // Mark that first load is over
+      }
+      
       map.display_menubar(car, game.get_num_players());   // Display menu bar at bottom of screen
       map.display_map();   // Display current map
       
@@ -77,8 +93,10 @@ void draw(){
     else {
       // Iterate through all players and find the winner
       for(int i = 0; i < game.get_num_players(); ++i)
-        if(car[i].get_lives() != 0 && !rank.hasValue(i+1)) 
+        if(car[i].get_lives() != 0 && !rank.hasValue(i+1)) {
           rank.append(i+1); 
+          car[i].stop_sound();
+        }
         
         
       map.display_endgame(rank);
@@ -106,6 +124,7 @@ void mousePressed() {
        menu.curr_song_stop();   
        menu.set_selection("game");  
        game.set_play(true);
+       menu.set_first_load(true);
     }
     
   }
@@ -119,8 +138,10 @@ void mousePressed() {
     menu.mousepressed_settings();
     
     // Update the number of users (1-player/2-players)
-    if(menu.get_users())
+    if(menu.get_users()){
       car[1] = new Player2(color(#FF0101), map.get_w()-29, map.get_h()-29, 10, 1, 0, -1);   // Begin in lower right corner
+      car[1].set_color(menu.get_player2_color());
+    }
     else
       car[1] = new AI(color(#FF0101), map.get_w()-29, map.get_h()-29, 10, 1, 0, -1);   // Begin in lower right corner
     
@@ -140,7 +161,10 @@ void mousePressed() {
   else if(menu.get_selection().equals("customize")){
     menu.mousepressed_customize();
     
-    car[0].set_color(menu.get_color());   // Set color of user car based on what user mouse clicked
+    car[0].set_color(menu.get_player1_color());   // Set color of user car based on what user mouse clicked
+    
+    if(menu.get_users())
+      car[1].set_color(menu.get_player2_color());
   }
     
   // If on maps screen...
@@ -156,7 +180,8 @@ void mousePressed() {
       // Initalize game after loading level
       menu.curr_song_stop();   
       menu.set_selection("game");  
-      game.set_play(true);
+      game.set_play(true); 
+      menu.set_first_load(true);
    }
 
  }

@@ -1,14 +1,25 @@
+/*
+Authors: Dalton Cale Cohee and Douglas Easom 
+Date: 18 April 2018
+Program: Light Racer: Player 2
+Program Description: This class implements the abstacted racer class to create an racer for a second user player. The class is very similar to the the Player 1 class, but the keys to control Player 2's racer are different  
+*/
+
 class Player2 implements Racer {
   // DATA MEMBERS:
-  color c;   // Color of car
-  int x, y;   // Position of car on grid
-  int start_x, start_y;   // Initial spawn position of car 
-  int car_width;    // Width of car
-  float vx, vy;   // Speed of car
-  float speed; 
-  IntList light_trail_x, light_trail_y;    // List to track each car's personal light trail
-  int lives;   // Variable to track the number of lives for a car
-  int start_lives;   // Variable to track the number of lives a car begins with so it knows when restarting
+  private color c;   // Color of car
+  private int x, y;   // Position of car on grid
+  private int start_x, start_y;   // Initial spawn position of car 
+  private int car_width;    // Width of car
+  private float vx, vy;   // Speed of car
+  private float speed; 
+  private IntList light_trail_x, light_trail_y;    // List to track each car's personal light trail
+  private int lives;   // Variable to track the number of lives for a car
+  private int start_lives;   // Variable to track the number of lives a car begins with so it knows when restarting
+  
+  // Load audio player for sound effects
+  private Minim minim;
+  private AudioPlayer drive, crash;
   
   // CONSTRUCTORS:
   // Default Constructor
@@ -23,6 +34,11 @@ class Player2 implements Racer {
    light_trail_x = new IntList();
    light_trail_y = new IntList(); 
    lives = 1;
+   
+   // Load sound effects for driving and crashing
+   minim = new Minim(Light_Racers.this);
+   drive = minim.loadFile("Driving.mp3");
+   crash = minim.loadFile("Crash.mp3");
   }
   
   // Overloaded Constructor
@@ -39,7 +55,12 @@ class Player2 implements Racer {
     light_trail_x = new IntList();
     light_trail_y = new IntList();    
     start_lives = 1;
-    lives = start_lives;    
+    lives = start_lives; 
+    
+   // Load sound effects for driving and crashing
+   minim = new Minim(Light_Racers.this);
+   drive = minim.loadFile("Driving.mp3");
+   crash = minim.loadFile("Crash.mp3");
   }
   
   // METHODS:
@@ -67,6 +88,12 @@ class Player2 implements Racer {
     this.lives = lives; 
     this.start_lives = lives;
   }
+  
+  // Method for looping driving sound effect for when racer starts driving
+  void start_sound() { drive.loop(); }
+  
+  // Method for stoping sound effect when car is destroyed or round is over
+  void stop_sound() { drive.pause(); drive.rewind(); }
   
   // Draw car
   void display(){
@@ -130,21 +157,38 @@ class Player2 implements Racer {
     }      
   }
   
-    
+  // Method for checking if a racer has encountered an obstacle, a light trail, or a wall
   void check_collision(boolean[][] light_trail){    
-    boolean collision = false;
+    boolean collision = false;   // Variable to track if a car has been destroyed
+    
+    // The width of the racer needs to be taken into account so that not just the center of the car is taken into consideration
+    int x_offset = 0;
+    int y_offset = 0;
+    
+    // Calculate the offset ahead of the racer based on its traveling direction
+    if(vx > 0 && vy == 0)  
+      x_offset = car_width;
+    else if (vx < 0 && vy == 0)
+      x_offset = -car_width;
+    else if(vx == 0 && vy > 0)
+      y_offset = car_width;
+    else if(vx == 0 && vy < 0)  
+      y_offset = -car_width;
     
     // Check if car has extended beyond boundaries of wall
-    if(x < 0 || y < 0 || x >= light_trail.length || y >= light_trail[0].length)
+    if(x+x_offset < 0 || y+y_offset < 0 || x+x_offset >= light_trail.length || y+y_offset >= light_trail[0].length)
       collision = true;
     
     
     // Check if car has run into obstical
-    else if(light_trail[x][y] == true)
+    else if(light_trail[x+x_offset][y+y_offset] == true)
       collision = true;
 
     // If a collision occurred
     if(collision){
+      // Play crash sound effect
+      crash.play();
+      crash.rewind();
       --lives;   // Diminish number of lives 
       respawn(light_trail);   // Respawn car
     }
@@ -209,6 +253,8 @@ class Player2 implements Racer {
       lives = start_lives;
       x = start_x; 
       y = start_y;
+      
+      drive.pause(); drive.rewind();  // Stop driving effects
       
       // Set starting speeds based on position
       // Start in left side

@@ -1,3 +1,10 @@
+/*
+Authors: Dalton Cale Cohee and Douglas Easom 
+Date: 6 April 2018
+Program: Light Racer: Maps
+Program Description: This class is used for displaying the different maps the game can be played on. The class contains functions that draw the maps, as well as functions that provide information about the maps obstacles.  
+*/
+
 class Maps{
   // DATA FIELDS:
   private int level;
@@ -155,7 +162,7 @@ class Maps{
     for(int i = 1; i <= ranking.size(); ++i){
      textSize(25);
      textAlign(LEFT, CENTER);
-     text(Integer.toString(i), width/3, 175+35*i);
+     text(Integer.toString(i) + ".", width/3, 175+35*i);
      textAlign(RIGHT, CENTER);
      text("Player "+ ranking.get(ranking.size()-i), 2*width/3, 175+35*i);
     }

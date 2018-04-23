@@ -1,3 +1,10 @@
+/*
+Authors: Dalton Cale Cohee and Douglas Easom 
+Date: 6 April 2018
+Program: Light Racer: Menu
+Program Description: This class is used to display all menu screens for the game. It also is used for switching from screen to screen and collecting all information that the user selects.  
+*/
+
 class Menu {
    // DATA FIELDS:
    // Data fields required for audio
@@ -14,7 +21,7 @@ class Menu {
    private int song_selection;   // Variable to track which song is selected from the settings screen
    private int num_players;   // Variable to track the number of players selected from the settings screen
    private boolean difficulty;   // Variable to track the difficulty selected from the settings screen
-   private color color_selection;   // Variable to track the customization color of the user
+   private color player1_color, player2_color;   // Variable to track the customization color of the two users
    private int lives;   // Variable to track the number of lives for each car
    private boolean users;   // Variable to track the number of users in a game (1-player vs 2-player)
     
@@ -44,7 +51,8 @@ class Menu {
      song_selection = 1;
      num_players = 2;
      difficulty = false;
-     color_selection = color(0,0,255);
+     player1_color = color(0,0,255);
+     player2_color = color(0,0,255);
      lives = 1;
      users = false;
          
@@ -75,8 +83,11 @@ class Menu {
    void set_difficulty (boolean difficulty) { this.difficulty = difficulty; }
    
    // Getter/setter for color
-   color get_color() { return this.color_selection; }
-   void set_color(color c) { this.color_selection = c; }
+   color get_player1_color() { return this.player1_color; }
+   void set_player1_color(color c) { this.player1_color = c; }
+   
+   color get_player2_color() { return this.player2_color; }
+   void set_player2_color(color c) { this.player2_color = c; }
    
    // Getter/setting for map
    int get_map() { return this.map; }
@@ -89,6 +100,9 @@ class Menu {
    // Getter/setting for number of users
    boolean get_users() { return this.users; } 
    void set_users(boolean users) { this.users = users;  }
+   
+   // Simple method for stopping whatever song is being played by menu
+   void curr_song_stop() { curr_song.pause(); curr_song.rewind(); }
    
    // Method for drawing main menu
    void display_main_menu(){
@@ -223,11 +237,16 @@ class Menu {
      line(55, 75, 75, 55);
      line(55, 75, 75, 95);
      
+     rectMode(CORNERS);
+     fill(100, 100);
+     noStroke();
+     rect(20, 120, width-20, height-25);
+     
      // Instruction body text
-     textFont(font, 16);
+     textFont(font, 20);
      textAlign(LEFT);
      fill(255);
-     text("Insert instructions here", 50, 150);
+     text(".:Game Play:.\nUp to 4 Players race around the map leaving a light trail\n behind. Players are eliminated when they come in contact \nwith other player’s trail or the walls of the map. When a \nplayer is eliminated their trial is removed from the map and \nthey are respawned back in there starting location. When a \nplayer’s lives total reaches zero they are removed from the \ngame. \nThe last player alive wins the game.\n\n.:Customization:.\nBefore the start of a game you may customize the game rules.\n\n Music – There are 3 options for in-game music.\n Racer Color – There are 8 different colors to choose from.\n Lives – There are three options for lives (1, 3, 5).\n Map – There are 6 different maps to choose from.\n Difficulty – Set to 'Beginner' by default. 'Normal' triples\n the racer's speed.\n Number of Players – 2, 3, or 4 players can play in a round.\n Number of Users - Rounds can be 1-Player or 2-Player.", 40, 150);
    }
    
    // Method for drawing the settings menu
@@ -301,8 +320,8 @@ class Menu {
      text("Lives: ", width/4+25, 250);
      textAlign(CENTER);
      text("1", width/4+150, 250);
-     text("2", width/4+300, 250);
-     text("3", width/4+450, 250);
+     text("3", width/4+300, 250);
+     text("5", width/4+450, 250);
      
      // Bubbles to select option of lives:
      rectMode(CENTER);
@@ -311,8 +330,12 @@ class Menu {
      ellipse(width/4+450, 275, 15, 15);
      
      // Fill bubble of select option for number of lives
+     int selection = 1;
+     if(lives == 3) selection = 2;
+     if(lives == 5) selection = 3;
+     
      fill(0);
-     ellipse(width/4+150*(lives), 275, 5, 5);
+     ellipse(width/4+150*(selection), 275, 5, 5);
      
      // Display option to select one or two players
      textAlign(RIGHT);
@@ -411,23 +434,49 @@ class Menu {
      
      color[] customize_color = {color(0, 0, 255), #00FFFF, #39FF14, #228B22, #6816e0, #d526b5, #FD5F00, #F3F315};   // Color array to display colors user can choose from
      int count = 0;   // Variable to iterate through every color and display it
+     
+     // Display colors for player 1:
+     textSize(28);
+     text("Player 1:", width/2, 125);
     
      rectMode(CENTER);
-     // Draw grid of potential colors to choose from
+     // Draw grid of potential colors to choose from for player 1
      for(int y = 1; y <= 2; ++y)
        for(int x = 1; x <= 4; ++x){
           // Fill outline of box based on if it is selected
-          if(color_selection == customize_color[count])
+          if(player1_color == customize_color[count])
             stroke(#46add4);
           // Fill outline of box based on if it is hovered over
-           else if(mouseX > (width/5)*x-50 && mouseX < (width/5)*x+50 && mouseY > 125*y+150 && mouseY < 125*y+250)
+           else if(mouseX > (width/5)*x-75/2 && mouseX < (width/5)*x+75/2 && mouseY > 100*y+100-75/2 && mouseY < 100*y+100+75/2)
             stroke(255);
            else
              stroke(0);
          
           fill(customize_color[count++]);
-          rect((width/5)*x, 125*y+200, 100, 100);
+          rect((width/5)*x, 100*y+100, 75, 75);
        }
+       
+     // Display colors for player 2:
+     textSize(28);
+     fill(255);
+     text("Player 2:", width/2, 375);
+    
+     // Draw grid of potential colors to choose from for player 2
+     count = 0;
+     for(int y = 1; y <= 2; ++y)
+       for(int x = 1; x <= 4; ++x){
+          // Fill outline of box based on if it is selected
+          if(player2_color == customize_color[count])
+            stroke(#46add4);
+          // Fill outline of box based on if it is hovered over
+           else if(mouseX > (width/5)*x-75/2 && mouseX < (width/5)*x+75/2 && mouseY > 100*y+350-75/2 && mouseY < 100*y+350+75/2)
+            stroke(255);
+           else
+             stroke(0);
+         
+          fill(customize_color[count++]);
+          rect((width/5)*x, 100*y+350, 75, 75);
+       }     
    }
    
  
@@ -561,10 +610,7 @@ class Menu {
      text("Start", width/2, height-40);
    }
    
-   // Simple method for stopping whatever song is being played by menu
-   void curr_song_stop() { curr_song.pause(); curr_song.rewind(); }
-   
-   
+      
    // Method for controlling what happens when a mouse is clicked on the menu page
    void mousepressed_menu(){
      // Play Game button is pressed
@@ -627,9 +673,9 @@ class Menu {
       if(dist(mouseX, mouseY, width/4+150, 275) < 15/2)
         lives = 1;
       if(dist(mouseX, mouseY, width/4+300, 275) < 15/2)
-        lives = 2;
-      if(dist(mouseX, mouseY, width/4+450, 275) < 15/2)
         lives = 3;
+      if(dist(mouseX, mouseY, width/4+450, 275) < 15/2)
+        lives = 5;
         
       // Mouse pressed to change number of user players
       // 2 Players:
@@ -705,15 +751,28 @@ class Menu {
       color[] customize_color = {color(0, 0, 255), #00FFFF, #39FF14, #228B22, #6816e0, #d526b5, #FD5F00, #F3F315};   // Color array of color choices user can choose from
       int index = 0;
       
+      // Player 1 Color Selection:
       // Loop through each color option and see if any have been selected
       for(int y = 1; y <= 2; ++y)
         for(int x = 1; x <= 4; ++x){
           // Check if mouse click is within bounds of a particular box
-          if(mouseX > (width/5)*x-50 && mouseX < (width/5)*x+50 && mouseY > 125*y+150 && mouseY < 125*y+250)
-            color_selection = customize_color[index++];   // Set color selection to index if true
+           if(mouseX > (width/5)*x-75/2 && mouseX < (width/5)*x+75/2 && mouseY > 100*y+100-75/2 && mouseY < 100*y+100+75/2)
+            player1_color = customize_color[index++];   // Set color selection to index if true
           else 
             ++index;
-      }    
+      }   
+      
+      // Player 2 Color Selection:
+      // Loop through each color option and see if any have been selected
+      index = 0;
+      for(int y = 1; y <= 2; ++y)
+        for(int x = 1; x <= 4; ++x){
+          // Check if mouse click is within bounds of a particular box
+           if(mouseX > (width/5)*x-75/2 && mouseX < (width/5)*x+75/2 && mouseY > 100*y+350-75/2 && mouseY < 100*y+350+75/2)
+            player2_color = customize_color[index++];   // Set color selection to index if true
+          else 
+            ++index;
+      } 
    }
    
    // Method for controlling what happens when mouse clicks exit button
