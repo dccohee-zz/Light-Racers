@@ -221,7 +221,8 @@ void mousePressed() {
         car[i].start_sound();
       }
           
-      game.reset();  
+      game.reset();   
+      map.set_obsticals(game.get_light_trail(), car[0].get_width());
       rank.clear();   // Clear round rankings
     }
       
