@@ -24,6 +24,9 @@ void setup(){
  menu = new Menu();
  map = new Maps();
  game = new Game();
+ 
+ if(map.get_h()%3 == 0 && map.get_w()%3 == 0) println(true); 
+ 
  car[0] = new Player1(color(0, 0, 255), 30, 30, 10, 1, 0, 1);
  car[1] = new AI(color(#FF0101), map.get_w()-29, map.get_h()-29, 10, 1, 0, -1);   // Begin in lower right corner
  car[2] = new AI(color(#CC5500), 30, map.get_h()-29, 10, 1, 1, 0);   // Begin in lower left corner
@@ -32,7 +35,7 @@ void setup(){
  rank = new IntList();
 }
 
-void draw(){
+void draw(){ 
   if(menu.get_selection().equals("menu"))
     menu.display_main_menu();
   
@@ -142,8 +145,8 @@ void mousePressed() {
     
     // Update the number of users (1-player/2-players)
     if(menu.get_users()){
-      car[1] = new Player2(color(#FF0101), map.get_w()-29, map.get_h()-29, 10, 1, 0, -1);   // Begin in lower right corner
-      car[1].set_color(menu.get_player2_color());
+      car[1] = new Player2(color(#00FFFF), map.get_w()-29, map.get_h()-29, 10, 1, 0, -1);   // Begin in lower right corner
+      //car[1].set_color(menu.get_player2_color());
     }
     else
       car[1] = new AI(color(#FF0101), map.get_w()-29, map.get_h()-29, 10, 1, 0, -1);   // Begin in lower right corner
@@ -213,8 +216,10 @@ void mousePressed() {
     // 0 indicates restart round
     if(result == 0) {      
       // Reset properties of car for when game begins again
-      for(int i = 0; i < game.get_num_players(); ++i)
+      for(int i = 0; i < game.get_num_players(); ++i){
         car[i].reset();
+        car[i].start_sound();
+      }
           
       game.reset();  
       rank.clear();   // Clear round rankings

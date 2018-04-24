@@ -58,7 +58,7 @@ class Menu {
      num_players = 2;
      difficulty = false;
      player1_color = color(0,0,255);
-     player2_color = color(0,0,255);
+     player2_color = color(#00FFFF);
      lives = 1;
      users = false;
      
@@ -231,7 +231,8 @@ class Menu {
      else 
        stroke(0);
        
-     fill(255);     
+     fill(255);    
+     ellipseMode(CENTER);
      ellipse(40, height-40, 50, 50);
      
      // Draw line through button if disabled

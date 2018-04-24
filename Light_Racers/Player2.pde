@@ -26,7 +26,7 @@ class Player2 implements Racer {
   Player2(){
    x = 30;
    y = 25;
-   car_width = 15;
+   car_width = 30;
    c = color(#002BFA);
    speed = 3;
    vx = 0;
@@ -184,7 +184,7 @@ class Player2 implements Racer {
     
     
     // Check if car has run into obstical
-    else if(light_trail[x+x_offset][y+y_offset] == true)
+    else if(light_trail[x][y] == true)
       collision = true;
 
     // If a collision occurred

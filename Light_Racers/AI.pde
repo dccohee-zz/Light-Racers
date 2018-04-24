@@ -26,7 +26,7 @@ class AI implements Racer {
   AI(){
    x = 30;
    y = 25;
-   car_width = 15;
+   car_width = 30;
    c = color(#002BFA);
    speed = 3;
    vx = 0;
@@ -150,7 +150,7 @@ class AI implements Racer {
       collision = true;
     
     // Check if car has run into obstical
-    else if(light_trail[x+x_offset][y+y_offset] == true)
+    else if(light_trail[x][y] == true)
       collision = true;
       
     // Else, check if obstacle is in AI's path
