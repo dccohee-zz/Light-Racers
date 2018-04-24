@@ -90,10 +90,13 @@ class Player2 implements Racer {
   }
   
   // Method for looping driving sound effect for when racer starts driving
-  void start_sound() { drive.loop(); }
+  void start_sound() { drive.setVolume(0.5); }
   
   // Method for stoping sound effect when car is destroyed or round is over
   void stop_sound() { drive.pause(); drive.rewind(); }
+  
+  // Method for playing crash sound effect when car is destroyed
+  void crash_sound() { crash.play(); crash.rewind(); }
   
   // Draw car
   void display(){
@@ -158,7 +161,7 @@ class Player2 implements Racer {
   }
   
   // Method for checking if a racer has encountered an obstacle, a light trail, or a wall
-  void check_collision(boolean[][] light_trail){    
+  boolean check_collision(boolean[][] light_trail){    
     boolean collision = false;   // Variable to track if a car has been destroyed
     
     // The width of the racer needs to be taken into account so that not just the center of the car is taken into consideration
@@ -186,12 +189,11 @@ class Player2 implements Racer {
 
     // If a collision occurred
     if(collision){
-      // Play crash sound effect
-      crash.play();
-      crash.rewind();
       --lives;   // Diminish number of lives 
       respawn(light_trail);   // Respawn car
     }
+    
+    return collision;
 }
  
   

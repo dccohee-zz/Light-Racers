@@ -238,14 +238,12 @@ class Maps{
   
   // Method for displaying map for level 1
   void display_level1(){
-     play_song();
      display_playarea();
   }
     
     
   // Method for displaying map for level 2
   void display_level2(){
-    play_song();
     display_playarea();
     
     fill(175);
@@ -259,7 +257,6 @@ class Maps{
   
   // Method for displaying map for level 3
   void display_level3(){
-    play_song();
     display_playarea();
     
     fill(175);
@@ -284,7 +281,6 @@ class Maps{
   
   // Method for displaying map for level 5
   void display_level5(){
-    play_song();
     display_playarea();
     
     fill(175); 
@@ -305,7 +301,6 @@ class Maps{
   
   // Method for displaying map for level 6
   void display_level6(){
-    play_song();
     display_playarea();
     
     rectMode(CORNER);

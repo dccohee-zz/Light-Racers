@@ -20,10 +20,11 @@ interface Racer {
   
   void start_sound();   // Method for beginning driving sound effect
   void stop_sound();   // Method for ending driving sound effect
+  void crash_sound();   // Method for playing crash sound effect
   
   void display();   // Method for drawing car
   void update(boolean[][] light_trail);   // Method for changing car's position. Inputs array to mark previous location as visited
-  void check_collision(boolean[][] light_trail);   // Method for checking if racer runs into a 'visited' location
+  boolean check_collision(boolean[][] light_trail);   // Method for checking if racer runs into a 'visited' location
   void respawn(boolean[][] light_trail);   // Method for restarting car after collision
   void press_key();   // Method for controling racers using computer keys
   void reset();   // Method for restarting car to default values at the end of a round

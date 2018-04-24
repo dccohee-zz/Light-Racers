@@ -17,6 +17,7 @@ class Menu {
    private int map;    // Variable to track which map is selected
    private PFont font;   // Text on UI screens
    private PImage map1, map2, map3, map4, map5, map6;   // Variables to store images of all map options
+   private PImage music_pic, soundeffect_pic;   // Variable to stop clipart for volume button and sound effect button
       
    private int song_selection;   // Variable to track which song is selected from the settings screen
    private int num_players;   // Variable to track the number of players selected from the settings screen
@@ -25,6 +26,8 @@ class Menu {
    private int lives;   // Variable to track the number of lives for each car
    private boolean users;   // Variable to track the number of users in a game (1-player vs 2-player)
     
+   private boolean music;   // Variable for controlling if music plays during the round
+   private boolean sound_effect;   // Variable for controlling if sound effects play during the round 
    
    // CONSTRUCTORS:
    // Default constructor
@@ -48,6 +51,9 @@ class Menu {
      map5 = loadImage("Level5.jpg");
      map6 = loadImage("Level6.jpg");
      
+     music_pic = loadImage("music.png");
+     soundeffect_pic = loadImage("soundeffect.png");
+     
      song_selection = 1;
      num_players = 2;
      difficulty = false;
@@ -55,6 +61,9 @@ class Menu {
      player2_color = color(0,0,255);
      lives = 1;
      users = false;
+     
+     music = true;
+     sound_effect = true;
          
      curr_song = song1;
      curr_song.loop();
@@ -100,6 +109,14 @@ class Menu {
    // Getter/setting for number of users
    boolean get_users() { return this.users; } 
    void set_users(boolean users) { this.users = users;  }
+   
+   // Getter/setter for play state
+   boolean get_music() { return this.music; }
+   void set_music(boolean music) { this.music = music; }
+   
+   // Getter/setter for sound effect state
+   boolean get_sound_effect() { return this.sound_effect; }
+   void set_sound_effect(boolean sound_effect) { this.sound_effect = sound_effect; }
    
    // Simple method for stopping whatever song is being played by menu
    void curr_song_stop() { curr_song.pause(); curr_song.rewind(); }
@@ -206,6 +223,39 @@ class Menu {
      rect(width/2, 550, 200, 50);
      fill(0);
      text("Exit", width/2, 550);
+
+     // Display music toggle button:
+     // Change highlight based on mouse position
+     if(dist(mouseX, mouseY, 40, height-40) < 50)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);
+       
+     fill(255);     
+     ellipse(40, height-40, 50, 50);
+     
+     // Draw line through button if disabled
+     if(!music) 
+       line(25, height-55, 55, height-25);
+       
+     noTint();
+     image(music_pic, 20, height-58, 35, 35); 
+     
+     // Display sound effect toggle button:
+     // Change highlight based on mouse position
+      if(dist(mouseX, mouseY, 100, height-40) < 50)
+       stroke(70, 173, 212);
+     else 
+       stroke(0);
+             
+     fill(255);
+     ellipse(100, height-40, 50, 50);
+     
+     // Draw line through button if disabled
+     if(!sound_effect) 
+       line(85, height-55, 115, height-25);
+     
+     image(soundeffect_pic, 83, height-58, 35, 35);
    }
    
    
@@ -640,6 +690,15 @@ class Menu {
       // Exit button is pressed    
       else if(mouseX < width/2+200/2 && mouseX > width/2-200/2 && mouseY > 550-50/2 && mouseY < 550+50/2)
         selection = "exit";
+        
+      // Music toggle button is pressed    
+      else if(dist(mouseX, mouseY, 40, height-40) < 50)
+        music = !music;
+        
+      // Sound effects toggle button is pressed 
+      else if(dist(mouseX, mouseY, 100, height-40) < 50)
+        sound_effect = !sound_effect;
+        
    }
  
    // Method for controlling what happens when a mouse is clicked on the instructions page

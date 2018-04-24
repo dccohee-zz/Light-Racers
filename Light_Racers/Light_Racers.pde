@@ -53,16 +53,7 @@ void draw(){
     int death_count = 0;   // Variable keeping track of number of cars destroyed
     
     // If in game mode and round is ongoing
-    if(game.get_play()){         
-      
-      // If loaded for first time, initalize sound effects
-      if(menu.get_first_load()){
-        for(int i = 0; i < game.get_num_players(); ++i)
-          car[i].start_sound();
-          
-        menu.set_first_load(false);   // Mark that first load is over
-      }
-      
+    if(game.get_play()){               
       map.display_menubar(car, game.get_num_players());   // Display menu bar at bottom of screen
       map.display_map();   // Display current map
       
@@ -81,7 +72,10 @@ void draw(){
         
         car[i].display();   // Draw vehicle
         car[i].update(game.get_light_trail());   // Update vehicle
-        car[i].check_collision(game.get_light_trail());   // Check if car has run into obstical or wall
+        boolean result = car[i].check_collision(game.get_light_trail());   // Check if car has run into obstical or wall
+        
+        if(result && menu.get_sound_effect())
+          car[i].crash_sound();
       }
       
       // Check if all but 1 player has been destroyed
@@ -125,6 +119,15 @@ void mousePressed() {
        menu.set_selection("game");  
        game.set_play(true);
        menu.set_first_load(true);
+       
+      // Play sound effects if not disabled
+      if(menu.get_sound_effect())
+        for(int i = 0; i < game.get_num_players(); ++i)
+          car[i].start_sound();
+       
+      // Play music if not disabled
+      if(menu.get_music())
+        map.play_song();
     }
     
   }
@@ -182,6 +185,16 @@ void mousePressed() {
       menu.set_selection("game");  
       game.set_play(true); 
       menu.set_first_load(true);
+      
+      // Play sound effects if not disabled
+      println(menu.get_sound_effect());
+      if(menu.get_sound_effect())
+        for(int i = 0; i < game.get_num_players(); ++i)
+          car[i].start_sound();
+      
+      // Play music if not disabled
+      if(menu.get_music())
+        map.play_song();
    }
 
  }
